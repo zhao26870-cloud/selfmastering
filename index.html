@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfMaster | Personal Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for index page */
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) var(--percent, 0%), var(--gray-light) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .progress-circle span {
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .streak-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), #ff6b9d);
+            border-radius: 50%;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .streak-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .streak-label {
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+            flex-shrink: 0;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: var(--progress, 65%);
+        }
+
+        .btn-small {
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-small:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+    <div class="container header-content">
+        <div class="logo">
+            <i class="fas fa-brain"></i>
+            <span><a href="index.html" style="color: inherit; text-decoration: none;">SelfMaster</a></span>
+        </div>
+        <nav id="main-nav">
+            <ul>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="calendar.html"><i class="fas fa-calendar"></i> Calendar</a></li>
+                <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
+                <li><a href="habits.html"><i class="fas fa-running"></i> Habits</a></li>
+                <li><a href="notes.html"><i class="fas fa-sticky-note"></i> Notes</a></li>
+                <li><a href="reviews.html"><i class="fas fa-chart-bar"></i> Reviews</a></li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>Master Your Life with Self-Management</h1>
+            <p>Take control of your time, goals, and habits with our comprehensive self-management system. Organize your tasks, track your progress, and achieve more every day.</p>
+            <div class="hero-buttons">
+                <a href="tasks.html" class="btn">Start Managing Tasks</a>
+                <a href="habits.html" class="btn btn-outline">Track Habits</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section class="quick-access">
+        <div class="container">
+            <h2 class="section-title">Quick Access</h2>
+            <div class="quick-grid">
+                <a href="tasks.html" class="quick-card">
+                    <div class="quick-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Task Manager</h3>
+                    <p>Manage daily tasks and priorities</p>
+                    <span class="quick-badge" id="pending-tasks-badge">Loading...</span>
+                </a>
+                <a href="habits.html" class="quick-card">
+                    <div class="quick-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3>Habit Tracker</h3>
+                    <p>Build and track daily habits</p>
+                    <span class="quick-badge" id="habit-streak-badge">Loading...</span>
+                </a>
+                <a href="goals.html" class="quick-card">
+                    <div class="quick-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Goal Setting</h3>
+                    <p>Set and achieve your goals</p>
+                    <span class="quick-badge" id="active-goals-badge">Loading...</span>
+                </a>
+                <a href="analytics.html" class="quick-card">
+                    <div class="quick-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics</h3>
+                    <p>View progress and insights</p>
+                    <span class="quick-badge" id="growth-badge">Loading...</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Today's Overview -->
+    <section class="overview">
+        <div class="container">
+            <h2 class="section-title">Today's Overview</h2>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <h3><i class="fas fa-calendar-day"></i> Today's Tasks</h3>
+                    <div class="overview-content">
+                        <div class="progress-circle" id="tasks-progress-circle" data-percent="0">
+                            <span id="tasks-progress-text">0%</span>
+                        </div>
+                        <div class="overview-details">
+                            <p><strong>Completed:</strong> <span id="completed-tasks-count">0</span>/<span id="total-tasks-count">0</span> tasks</p>
+                            <p><strong>Priority:</strong> <span id="high-priority-count">0</span> high, <span id="medium-priority-count">0</span> medium</p>
+                            <a href="tasks.html" class="btn-small">View All →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <h3><i class="fas fa-fire"></i> Current Streak</h3>
+                    <div class="overview-content">
+                        <div class="streak-display">
+                            <span class="streak-number" id="current-streak">0</span>
+                            <span class="streak-label">days</span>
+                        </div>
+                        <div class="overview-details">
+                            <p><strong>Active habits:</strong> <span id="active-habits-count">0</span></p>
+                            <p><strong>Best streak:</strong> <span id="best-habit-streak">0</span> days</p>
+                            <a href="habits.html" class="btn-small">Track More →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <h3><i class="fas fa-trophy"></i> Goal Progress</h3>
+                    <div class="overview-content">
+                        <div class="progress-bar">
+                            <div class="progress" id="goals-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="overview-details">
+                            <p><strong>Monthly target:</strong> <span id="goals-progress-text">0</span>% complete</p>
+                            <p><strong>On track:</strong> <span id="on-track-goals">0</span>/<span id="total-goals">0</span> goals</p>
+                            <a href="goals.html" class="btn-small">Set Goals →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motivation Section -->
+    <section class="motivation">
+        <div class="container">
+            <div class="motivation-card">
+                <div class="motivation-content">
+                    <h3><i class="fas fa-quote-left"></i> Daily Motivation</h3>
+                    <p class="quote" id="daily-quote">"The secret of getting ahead is getting started."</p>
+                    <p class="author" id="quote-author">- Mark Twain</p>
+                    <button class="btn btn-accent" id="new-quote-btn">
+                        <i class="fas fa-sync"></i> New Motivation
+                    </button>
+                </div>
+                <div class="motivation-focus">
+                    <h4><i class="fas fa-crosshairs"></i> Today's Focus</h4>
+                    <p id="daily-focus">Complete high-priority tasks before noon and maintain your exercise routine.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>SelfMaster</h4>
+                    <p>Your comprehensive personal management system designed to help you take control of your life, build better habits, and achieve your goals.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="tasks.html">Task Manager</a></li>
+                        <li><a href="habits.html">Habit Tracker</a></li>
+                        <li><a href="goals.html">Goal Setting</a></li>
+                        <li><a href="analytics.html">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="calendar.html">Daily Planner</a></li>
+                        <li><a href="projects.html">Project Management</a></li>
+                        <li><a href="focus.html">Focus Timer</a></li>
+                        <li><a href="reviews.html">Review System</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SelfMaster. All rights reserved. Designed for personal growth and productivity.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Homepage-specific functionality
+        const quotes = [
+            { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+            { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+            { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+            { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+            { text: "The future depends on what you do today.", author: "Mahatma Gandhi" }
+        ];
+
+        const focuses = [
+            "Complete high-priority tasks before noon and maintain your exercise routine.",
+            "Focus on one major task at a time without distractions.",
+            "Take regular breaks to maintain mental clarity throughout the day.",
+            "Review your goals each morning to stay aligned with your priorities.",
+            "Celebrate small wins to maintain motivation throughout your journey.",
+            "Practice mindfulness during transitions between tasks.",
+            "Schedule time for learning and skill development today."
+        ];
+
+        function getRandomQuote() {
+            return quotes[Math.floor(Math.random() * quotes.length)];
+        }
+
+        function getRandomFocus() {
+            return focuses[Math.floor(Math.random() * focuses.length)];
+        }
+
+        function updateMotivation() {
+            const quote = getRandomQuote();
+            const focus = getRandomFocus();
+            
+            document.getElementById('daily-quote').textContent = `"${quote.text}"`;
+            document.getElementById('quote-author').textContent = `- ${quote.author}`;
+            document.getElementById('daily-focus').textContent = focus;
+        }
+
+        function updateDashboardStats() {
+            // Load data from localStorage
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const habits = JSON.parse(localStorage.getItem('habits') || '[]');
+            const goals = JSON.parse(localStorage.getItem('goals') || '[]');
+            
+            // Update task statistics
+            updateTaskStats(tasks);
+            
+            // Update habit statistics
+            updateHabitStats(habits);
+            
+            // Update goal statistics
+            updateGoalStats(goals);
+            
+            // Update quick access badges
+            updateQuickAccessBadges(tasks, habits, goals);
+        }
+
+        function updateTaskStats(tasks) {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const pendingTasks = totalTasks - completedTasks;
+            const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            // Count tasks by priority
+            const highPriorityTasks = tasks.filter(task => task.priority === 'high').length;
+            const mediumPriorityTasks = tasks.filter(task => task.priority === 'medium').length;
+            
+            // Update UI
+            document.getElementById('tasks-progress-circle').setAttribute('data-percent', completionRate);
+            document.getElementById('tasks-progress-circle').style.setProperty('--percent', completionRate + '%');
+            document.getElementById('tasks-progress-text').textContent = completionRate + '%';
+            
+            document.getElementById('completed-tasks-count').textContent = completedTasks;
+            document.getElementById('total-tasks-count').textContent = totalTasks;
+            document.getElementById('high-priority-count').textContent = highPriorityTasks;
+            document.getElementById('medium-priority-count').textContent = mediumPriorityTasks;
+        }
+
+        function updateHabitStats(habits) {
+            const activeHabits = habits.length;
+            
+            // Calculate current streak (simplified - using the first habit's streak)
+            let currentStreak = 0;
+            let bestStreak = 0;
+            
+            if (habits.length > 0) {
+                // Find the highest current streak
+                habits.forEach(habit => {
+                    if (habit.streak > currentStreak) {
+                        currentStreak = habit.streak;
+                    }
+                    if (habit.bestStreak > bestStreak) {
+                        bestStreak = habit.bestStreak;
+                    }
+                });
+            }
+            
+            // Update UI
+            document.getElementById('current-streak').textContent = currentStreak;
+            document.getElementById('active-habits-count').textContent = activeHabits;
+            document.getElementById('best-habit-streak').textContent = bestStreak;
+        }
+
+        function updateGoalStats(goals) {
+            const totalGoals = goals.length;
+            
+            if (totalGoals === 0) {
+                document.getElementById('goals-progress-bar').style.width = '0%';
+                document.getElementById('goals-progress-text').textContent = '0';
+                document.getElementById('on-track-goals').textContent = '0';
+                document.getElementById('total-goals').textContent = '0';
+                return;
+            }
+            
+            // Calculate average progress
+            let totalProgress = 0;
+            let onTrackGoals = 0;
+            
+            goals.forEach(goal => {
+                totalProgress += goal.progress || 0;
+                
+                // Simple on-track calculation (goal is on track if progress > 50%)
+                if (goal.progress >= 50) {
+                    onTrackGoals++;
+                }
+            });
+            
+            const averageProgress = Math.round(totalProgress / totalGoals);
+            
+            // Update UI
+            document.getElementById('goals-progress-bar').style.width = averageProgress + '%';
+            document.getElementById('goals-progress-text').textContent = averageProgress;
+            document.getElementById('on-track-goals').textContent = onTrackGoals;
+            document.getElementById('total-goals').textContent = totalGoals;
+        }
+
+        function updateQuickAccessBadges(tasks, habits, goals) {
+            // Task Manager badge (pending tasks)
+            const pendingTasks = tasks.filter(task => !task.completed).length;
+            document.getElementById('pending-tasks-badge').textContent = `${pendingTasks} pending`;
+            
+            // Habit Tracker badge (current streak)
+            let currentStreak = 0;
+            if (habits.length > 0) {
+                habits.forEach(habit => {
+                    if (habit.streak > currentStreak) {
+                        currentStreak = habit.streak;
+                    }
+                });
+            }
+            document.getElementById('habit-streak-badge').textContent = `${currentStreak}-day streak`;
+            
+            // Goal Setting badge (active goals)
+            const activeGoals = goals.filter(goal => goal.progress < 100).length;
+            document.getElementById('active-goals-badge').textContent = `${activeGoals} active`;
+            
+            // Analytics badge (growth - simplified)
+            const growth = Math.round(Math.random() * 20); // Random growth for demo
+            document.getElementById('growth-badge').textContent = `+${growth}% growth`;
+        }
+
+        function initializeHomePage() {
+            console.log('Initializing homepage...');
+            
+            // Initialize sample data if needed
+            if (typeof SelfMasterData !== 'undefined') {
+                SelfMasterData.initializeSampleData();
+            }
+            
+            // Update dashboard with current data
+            updateDashboardStats();
+            
+            // Set initial motivation
+            updateMotivation();
+            
+            // Set up motivation refresh button
+            const newQuoteBtn = document.getElementById('new-quote-btn');
+            if (newQuoteBtn) {
+                newQuoteBtn.addEventListener('click', updateMotivation);
+            }
+            
+            // Mobile menu functionality
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const nav = document.querySelector('nav ul');
+            
+            if (mobileMenuBtn && nav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    nav.classList.toggle('show');
+                    mobileMenuBtn.innerHTML = nav.classList.contains('show') 
+                        ? '<i class="fas fa-times"></i>' 
+                        : '<i class="fas fa-bars"></i>';
+                });
+            }
+            
+            // Auto-refresh stats every minute
+            setInterval(updateDashboardStats, 60000);
+            
+            console.log('Homepage initialized successfully');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeHomePage);
+
+        // Also update stats when page becomes visible again
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateDashboardStats();
+            }
+        });
+    </script>
+</body>
+</html>
