@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Mode | SelfMaster</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Focus Mode Specific Styles */
+        :root {
+            --focus-primary: #4361ee;
+            --focus-secondary: #3a0ca3;
+            --focus-accent: #f72585;
+            --focus-success: #4cc9f0;
+            --focus-warning: #f8961e;
+            --focus-dark: #1a1a2e;
+            --focus-darker: #16213e;
+            --focus-light: #e2eafc;
+        }
+        
+        body.focus-mode {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--focus-dark) 0%, var(--focus-darker) 100%);
+            color: var(--focus-light);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .focus-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Background Animation */
+        .focus-bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+        
+        /* Focus Header */
+        .focus-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .focus-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .focus-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--focus-primary), var(--focus-success));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .focus-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--focus-success), var(--focus-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .focus-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        /* Main Content */
+        .focus-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 5;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* Task Section */
+        .focus-task-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+        
+        .focus-task-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .focus-task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--focus-primary), var(--focus-success));
+        }
+        
+        .focus-task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(67, 97, 238, 0.3);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .task-title-section h2 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .task-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .task-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(67, 97, 238, 0.2);
+            color: var(--focus-success);
+        }
+        
+        .task-priority {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: rgba(249, 65, 68, 0.2);
+            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .task-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .meta-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(67, 97, 238, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--focus-success);
+        }
+        
+        /* Timer Section */
+        .focus-timer-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+        
+        .timer-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .timer-session-indicator {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--focus-primary), var(--focus-accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .timer-display {
+            font-size: 5rem;
+            font-weight: 300;
+            font-family: 'Courier New', monospace;
+            margin: 1.5rem 0;
+            color: white;
+            text-shadow: 0 0 20px rgba(76, 201, 240, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .timer-progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .timer-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, var(--focus-primary), var(--focus-secondary));
+            color: white;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.6);
+        }
+        
+        .btn-pause {
+            background: rgba(248, 150, 30, 0.2);
+            color: var(--focus-warning);
+            border: 2px solid rgba(248, 150, 30, 0.3);
+        }
+        
+        .btn-pause:hover {
+            background: rgba(248, 150, 30, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Stats Section */
+        .focus-stats-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(76, 201, 240, 0.3);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--focus-primary), var(--focus-success));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Actions Section */
+        .focus-actions-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(76, 201, 240, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--focus-primary), var(--focus-success));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .action-text {
+            font-weight: 600;
+            color: white;
+        }
+        
+        .action-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* Motivation Section */
+        .focus-motivation-section {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .motivation-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .motivation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(76, 201, 240, 0.1), transparent);
+            z-index: 0;
+        }
+        
+        .motivation-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quote-icon {
+            font-size: 2rem;
+            color: var(--focus-success);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .motivation-quote {
+            font-size: 1.4rem;
+            font-style: italic;
+            color: white;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .motivation-author {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Focus Tips */
+        .focus-tips {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        
+        .tips-toggle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--focus-accent), #ff6b9d);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(247, 37, 133, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .tips-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(247, 37, 133, 0.6);
+        }
+        
+        .tips-panel {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 300px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tips-panel.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .tips-header h4 {
+            margin: 0;
+            color: white;
+        }
+        
+        .close-tips {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tip-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .tip-icon {
+            color: var(--focus-success);
+            font-size: 1rem;
+            margin-top: 0.2rem;
+        }
+        
+        .tip-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Session Progress */
+        .session-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .session-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .session-dot.active {
+            background: var(--focus-success);
+            box-shadow: 0 0 10px var(--focus-success);
+        }
+        
+        .session-dot.completed {
+            background: var(--focus-primary);
+        }
+        
+        /* Timer States */
+        .timer-container.work-session {
+            border-color: rgba(76, 201, 240, 0.3);
+        }
+        
+        .timer-container.break-session {
+            border-color: rgba(247, 37, 133, 0.3);
+        }
+        
+        .timer-container.running {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(76, 201, 240, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .focus-main {
+                padding: 1rem;
+            }
+            
+            .timer-display {
+                font-size: 3.5rem;
+            }
+            
+            .timer-container {
+                padding: 2rem;
+            }
+            
+            .timer-btn {
+                min-width: 120px;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .focus-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .focus-nav {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .timer-display {
+                font-size: 2.8rem;
+            }
+            
+            .timer-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .timer-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-gradient {
+            background: linear-gradient(90deg, var(--focus-success), var(--focus-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="focus-mode">
+    <!-- Background Animation -->
+    <div class="focus-bg-animation" id="bg-animation"></div>
+    
+    <!-- Focus Container -->
+    <div class="focus-container">
+        <!-- Header -->
+        <header class="focus-header">
+            <div class="focus-brand">
+                <div class="focus-logo">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h1 class="focus-title">Focus Mode</h1>
+            </div>
+            
+            <nav class="focus-nav">
+                <button class="btn btn-outline" onclick="toggleMusic()" id="music-toggle">
+                    <i class="fas fa-music"></i> Music: Off
+                </button>
+                <button class="btn" onclick="toggleFullscreen()">
+                    <i class="fas fa-expand"></i> Fullscreen
+                </button>
+                <button class="btn btn-outline" onclick="exitFocusMode()">
+                    <i class="fas fa-sign-out-alt"></i> Exit
+                </button>
+            </nav>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="focus-main">
+            <!-- Current Task -->
+            <section class="focus-task-section">
+                <div class="focus-task-card">
+                    <div class="task-header">
+                        <div class="task-title-section">
+                            <h2 id="focus-task-title">Loading current task...</h2>
+                            <div class="task-tags" id="task-tags">
+                                <!-- Tags will be added here -->
+                            </div>
+                        </div>
+                        <div class="task-priority" id="focus-task-priority">
+                            <i class="fas fa-flag"></i> High Priority
+                        </div>
+                    </div>
+                    
+                    <p class="task-description" id="focus-task-description">
+                        Loading task description...
+                    </p>
+                    
+                    <div class="task-meta">
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <div class="meta-label">Estimate</div>
+                                <div class="meta-value" id="focus-task-estimate">30 minutes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div>
+                                <div class="meta-label">Due Date</div>
+                                <div class="meta-value" id="focus-task-due">Today</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <div class="meta-label">Progress</div>
+                                <div class="meta-value" id="focus-task-progress">Starting...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Timer Section -->
+            <section class="focus-timer-section">
+                <div class="timer-container" id="timer-container">
+                    <div class="timer-session-indicator" id="session-indicator">
+                        <i class="fas fa-crosshairs"></i> Focus Session
+                    </div>
+                    
+                    <div class="timer-display" id="focus-timer">25:00</div>
+                    
+                    <div class="session-progress" id="session-progress">
+                        <!-- Session dots will be added here -->
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button class="timer-btn btn-start" id="start-timer" onclick="startTimer()">
+                            <i class="fas fa-play"></i> Start Session
+                        </button>
+                        <button class="timer-btn btn-pause" id="pause-timer" onclick="pauseTimer()" style="display: none;">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="timer-btn btn-reset" id="reset-timer" onclick="resetTimer()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Statistics -->
+            <section class="focus-stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value" id="total-focus-time">0h 0m</div>
+                        <div class="stat-label">Total Focus</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value" id="tasks-completed">0</div>
+                        <div class="stat-label">Tasks Done</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value" id="productivity-score">0%</div>
+                        <div class="stat-label">Productivity</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Actions -->
+            <section class="focus-actions-section">
+                <div class="actions-grid">
+                    <div class="action-btn" onclick="markTaskComplete()">
+                        <div class="action-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="action-text">Mark Complete</div>
+                        <div class="action-desc">Finish this task</div>
+                    </div>
+                    
+                    <div class="action-btn" onclick="skipTask()">
+                        <div class="action-icon">
+                            <i class="fas fa-forward"></i>
+                        </div>
+                        <div class="action-text">Skip Task</div>
+                        <div class="action-desc">Move to next task</div>
+                    </div>
+                    
+                    <div class="action-btn" onclick="addFiveMinutes()">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="action-text">+5 Minutes</div>
+                        <div class="action-desc">Extend session</div>
+                    </div>
+                    
+                    <div class="action-btn" onclick="logNote()">
+                        <div class="action-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <div class="action-text">Add Note</div>
+                        <div class="action-desc">Record thoughts</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Motivation -->
+            <section class="focus-motivation-section">
+                <div class="motivation-card">
+                    <div class="motivation-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="motivation-quote" id="focus-quote">
+                            "The secret of getting ahead is getting started."
+                        </p>
+                        <div class="motivation-author" id="focus-author">
+                            — Mark Twain
+                        </div>
+                        <button class="btn btn-outline" onclick="newQuote()" style="margin-top: 1.5rem;">
+                            <i class="fas fa-sync"></i> New Quote
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Tips Panel -->
+        <div class="focus-tips">
+            <button class="tips-toggle" onclick="toggleTips()">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            
+            <div class="tips-panel" id="tips-panel">
+                <div class="tips-header">
+                    <h4>Focus Tips</h4>
+                    <button class="close-tips" onclick="toggleTips()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-volume-mute"></i>
+                    </div>
+                    <div class="tip-text">
+                        Use noise-cancelling headphones or ambient sounds
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="tip-text">
+                        Work in 25-minute focused sessions with 5-minute breaks
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-water"></i>
+                    </div>
+                    <div class="tip-text">
+                        Stay hydrated - keep a water bottle nearby
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-eye-slash"></i>
+                    </div>
+                    <div class="tip-text">
+                        Close unnecessary tabs and apps to minimize distractions
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Focus Mode specific functionality
+        let focusTimer = null;
+        let timerRunning = false;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let isWorkSession = true;
+        let sessionsCompletedToday = 0;
+        let completedPomodoros = 0;
+        let totalFocusTime = 0;
+        let currentTaskId = null;
+        let musicPlaying = false;
+        
+        // Motivational quotes
+        const quotes = [
+            {
+                text: "The secret of getting ahead is getting started.",
+                author: "Mark Twain"
+            },
+            {
+                text: "It does not matter how slowly you go as long as you do not stop.",
+                author: "Confucius"
+            },
+            {
+                text: "Concentrate all your thoughts upon the work at hand. The sun's rays do not burn until brought to a focus.",
+                author: "Alexander Graham Bell"
+            },
+            {
+                text: "The way to get started is to quit talking and begin doing.",
+                author: "Walt Disney"
+            },
+            {
+                text: "Focus on being productive instead of busy.",
+                author: "Tim Ferriss"
+            },
+            {
+                text: "Don't watch the clock; do what it does. Keep going.",
+                author: "Sam Levenson"
+            },
+            {
+                text: "The shorter way to do many things is to do only one thing at a time.",
+                author: "Mozart"
+            },
+            {
+                text: "Your focus determines your reality.",
+                author: "George Lucas"
+            },
+            {
+                text: "The successful warrior is the average man, with laser-like focus.",
+                author: "Bruce Lee"
+            }
+        ];
+        
+        function initializeFocusMode() {
+            console.log('Initializing Focus Mode...');
+            
+            // Create background particles
+            createParticles();
+            
+            // Load current task
+            loadCurrentTask();
+            
+            // Load focus statistics
+            loadFocusStats();
+            
+            // Set random motivational quote
+            setRandomQuote();
+            
+            // Initialize timer display
+            updateTimerDisplay();
+            
+            // Initialize session progress dots
+            updateSessionProgress();
+            
+            // Check for saved timer state
+            const savedTimer = sessionStorage.getItem('focusTimerState');
+            if (savedTimer) {
+                const state = JSON.parse(savedTimer);
+                timeLeft = state.timeLeft;
+                isWorkSession = state.isWorkSession;
+                timerRunning = state.timerRunning;
+                
+                if (timerRunning) {
+                    startTimer();
+                } else {
+                    updateTimerDisplay();
+                }
+                
+                updateSessionIndicator();
+            }
+            
+            // Set up auto-save for timer state
+            setInterval(saveTimerState, 1000);
+            
+            // Set up keyboard shortcuts
+            setupKeyboardShortcuts();
+            
+            console.log('Focus Mode initialized successfully');
+        }
+        
+        function createParticles() {
+            const bgAnimation = document.getElementById('bg-animation');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size between 2px and 8px
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                
+                // Random animation delay and duration
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+                
+                bgAnimation.appendChild(particle);
+            }
+        }
+        
+        function loadCurrentTask() {
+            // Try to get task from session storage first
+            const taskId = sessionStorage.getItem('focusTaskId');
+            currentTaskId = taskId;
+            
+            if (taskId) {
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const task = tasks.find(t => t.id == taskId);
+                
+                if (task) {
+                    displayTask(task);
+                } else {
+                    setDefaultTask();
+                }
+            } else {
+                // Get next high priority task
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const nextTask = tasks
+                    .filter(t => !t.completed)
+                    .sort((a, b) => {
+                        // Sort by priority: high > medium > low
+                        const priorityOrder = { high: 3, medium: 2, low: 1 };
+                        return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+                    })[0];
+                
+                if (nextTask) {
+                    displayTask(nextTask);
+                    currentTaskId = nextTask.id;
+                    
+                    // Save for later reference
+                    sessionStorage.setItem('focusTaskId', nextTask.id);
+                } else {
+                    setDefaultTask();
+                }
+            }
+        }
+        
+        function displayTask(task) {
+            document.getElementById('focus-task-title').textContent = task.title;
+            
+            if (task.description) {
+                document.getElementById('focus-task-description').textContent = task.description;
+            }
+            
+            // Update priority
+            const priorityElement = document.getElementById('focus-task-priority');
+            priorityElement.innerHTML = `<i class="fas fa-flag"></i> ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority`;
+            
+            // Update tags
+            const tagsContainer = document.getElementById('task-tags');
+            if (task.tags && task.tags.length > 0) {
+                tagsContainer.innerHTML = task.tags.map(tag => 
+                    `<span class="task-tag">${tag}</span>`
+                ).join('');
+            } else {
+                tagsContainer.innerHTML = '';
+            }
+            
+            // Update meta information
+            document.getElementById('focus-task-estimate').textContent = task.estimate || 'Not specified';
+            
+            if (task.dueDate) {
+                const dueDate = new Date(task.dueDate);
+                const today = new Date();
+                const isToday = dueDate.toDateString() === today.toDateString();
+                const isOverdue = dueDate < today && !isToday;
+                
+                let dueText = dueDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                if (isToday) dueText = 'Today';
+                if (isOverdue) dueText += ' (Overdue)';
+                
+                document.getElementById('focus-task-due').textContent = dueText;
+            } else {
+                document.getElementById('focus-task-due').textContent = 'No deadline';
+            }
+            
+            document.getElementById('focus-task-progress').textContent = task.completed ? 'Completed' : 'Pending';
+        }
+        
+        function setDefaultTask() {
+            document.getElementById('focus-task-title').textContent = 'No active task found';
+            document.getElementById('focus-task-description').textContent = 'Create a new task or select one from your task list to start focusing.';
+            document.getElementById('focus-task-priority').innerHTML = '<i class="fas fa-flag"></i> No Priority';
+            document.getElementById('task-tags').innerHTML = '';
+            document.getElementById('focus-task-estimate').textContent = 'Not specified';
+            document.getElementById('focus-task-due').textContent = 'No deadline';
+            document.getElementById('focus-task-progress').textContent = 'No task';
+            currentTaskId = null;
+        }
+        
+        function loadFocusStats() {
+            // Load today's sessions
+            const today = new Date().toDateString();
+            const focusStats = JSON.parse(localStorage.getItem('focusStats') || '{}');
+            const todayStats = focusStats[today] || { sessions: 0, time: 0, pomodoros: 0 };
+            
+            sessionsCompletedToday = todayStats.sessions || 0;
+            completedPomodoros = todayStats.pomodoros || 0;
+            
+            // Calculate total focus time
+            let totalMinutes = 0;
+            Object.values(focusStats).forEach(day => {
+                totalMinutes += day.time || 0;
+            });
+            
+            totalFocusTime = totalMinutes;
+            
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            document.getElementById('total-focus-time').textContent = `${hours}h ${minutes}m`;
+            
+            // Count completed tasks
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const completedTasks = tasks.filter(t => t.completed).length;
+            document.getElementById('tasks-completed').textContent = completedTasks;
+            
+            // Calculate streak (simplified)
+            const dates = Object.keys(focusStats).sort();
+            let streak = 0;
+            let currentDate = new Date();
+            
+            for (let i = 0; i < 30; i++) {
+                const dateStr = currentDate.toDateString();
+                if (focusStats[dateStr] && focusStats[dateStr].sessions > 0) {
+                    streak++;
+                } else {
+                    break;
+                }
+                currentDate.setDate(currentDate.getDate() - 1);
+            }
+            
+            document.getElementById('current-streak').textContent = streak;
+            
+            // Calculate productivity score
+            const productivityScore = Math.min(100, Math.round((completedPomodoros / 8) * 100));
+            document.getElementById('productivity-score').textContent = `${productivityScore}%`;
+        }
+        
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                focusTimer = setInterval(updateTimer, 1000);
+                
+                // Update UI
+                document.getElementById('start-timer').style.display = 'none';
+                document.getElementById('pause-timer').style.display = 'flex';
+                document.getElementById('timer-container').classList.add('running');
+                document.getElementById('timer-container').classList.add(isWorkSession ? 'work-session' : 'break-session');
+                
+                // Play start sound
+                playSound('start');
+                
+                // Show notification
+                showNotification(isWorkSession ? 'Focus session started!' : 'Break time started!', 'info');
+            }
+        }
+        
+        function pauseTimer() {
+            if (timerRunning) {
+                timerRunning = false;
+                clearInterval(focusTimer);
+                
+                // Update UI
+                document.getElementById('start-timer').style.display = 'flex';
+                document.getElementById('pause-timer').style.display = 'none';
+                document.getElementById('timer-container').classList.remove('running');
+                
+                // Play pause sound
+                playSound('pause');
+                
+                // Show notification
+                showNotification('Timer paused', 'warning');
+            }
+        }
+        
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = isWorkSession ? 25 * 60 : 5 * 60;
+            updateTimerDisplay();
+            document.getElementById('timer-container').classList.remove('work-session', 'break-session');
+            
+            showNotification('Timer reset', 'info');
+        }
+        
+        function updateTimer() {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                // Session completed
+                completeSession();
+            }
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('focus-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updateSessionIndicator() {
+            const indicator = document.getElementById('session-indicator');
+            if (isWorkSession) {
+                indicator.innerHTML = '<i class="fas fa-crosshairs"></i> Focus Session';
+                indicator.style.background = 'linear-gradient(90deg, var(--focus-primary), var(--focus-success))';
+            } else {
+                indicator.innerHTML = '<i class="fas fa-coffee"></i> Break Time';
+                indicator.style.background = 'linear-gradient(90deg, var(--focus-accent), #ff6b9d)';
+            }
+        }
+        
+        function updateSessionProgress() {
+            const progressContainer = document.getElementById('session-progress');
+            let html = '';
+            
+            // Create 4 session dots
+            for (let i = 0; i < 4; i++) {
+                let className = 'session-dot';
+                if (completedPomodoros > i) {
+                    className += ' completed';
+                } else if (completedPomodoros === i && isWorkSession) {
+                    className += ' active';
+                }
+                html += `<div class="${className}"></div>`;
+            }
+            
+            progressContainer.innerHTML = html;
+        }
+        
+        function completeSession() {
+            pauseTimer();
+            
+            // Record session completion
+            const today = new Date().toDateString();
+            const focusStats = JSON.parse(localStorage.getItem('focusStats') || '{}');
+            
+            if (!focusStats[today]) {
+                focusStats[today] = { sessions: 0, time: 0, pomodoros: 0 };
+            }
+            
+            focusStats[today].sessions++;
+            
+            if (isWorkSession) {
+                focusStats[today].pomodoros++;
+                completedPomodoros++;
+                sessionsCompletedToday++;
+                
+                // Add work time
+                focusStats[today].time += 25;
+                totalFocusTime += 25;
+            } else {
+                // Add break time
+                focusStats[today].time += 5;
+                totalFocusTime += 5;
+            }
+            
+            localStorage.setItem('focusStats', JSON.stringify(focusStats));
+            
+            // Switch session type
+            isWorkSession = !isWorkSession;
+            timeLeft = isWorkSession ? 25 * 60 : 5 * 60;
+            
+            // Update UI
+            updateSessionIndicator();
+            updateTimerDisplay();
+            updateSessionProgress();
+            loadFocusStats();
+            
+            // Show notification
+            if (isWorkSession) {
+                showNotification('Break complete! Time to focus again.', 'info');
+            } else {
+                showNotification('Focus session complete! Take a short break.', 'success');
+                
+                // Auto-start break timer after 2 seconds
+                setTimeout(() => {
+                    startTimer();
+                }, 2000);
+            }
+            
+            // Play completion sound
+            playSound('complete');
+            
+            // Update timer container classes
+            document.getElementById('timer-container').className = 'timer-container';
+            document.getElementById('timer-container').classList.add(isWorkSession ? 'work-session' : 'break-session');
+        }
+        
+        function markTaskComplete() {
+            if (!currentTaskId) {
+                showNotification('No active task to complete', 'warning');
+                return;
+            }
+            
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const taskIndex = tasks.findIndex(t => t.id == currentTaskId);
+            
+            if (taskIndex !== -1) {
+                tasks[taskIndex].completed = true;
+                tasks[taskIndex].completedAt = new Date().toISOString();
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                
+                // Show confirmation
+                showNotification('Task marked as complete!', 'success');
+                
+                // Load next task
+                setTimeout(() => {
+                    sessionStorage.removeItem('focusTaskId');
+                    loadCurrentTask();
+                    loadFocusStats();
+                }, 1000);
+            }
+        }
+        
+        function skipTask() {
+            if (confirm('Skip this task and move to the next one?')) {
+                // Clear current task from session storage
+                sessionStorage.removeItem('focusTaskId');
+                
+                // Load next task
+                loadCurrentTask();
+                
+                // Reset timer to focus session
+                if (!isWorkSession) {
+                    isWorkSession = true;
+                    updateSessionIndicator();
+                    timeLeft = 25 * 60;
+                    updateTimerDisplay();
+                }
+                
+                showNotification('Skipped to next task', 'info');
+            }
+        }
+        
+        function addFiveMinutes() {
+            timeLeft += 5 * 60;
+            updateTimerDisplay();
+            showNotification('Added 5 minutes to current session', 'info');
+        }
+        
+        function logNote() {
+            const note = prompt('Enter a note about your focus session:');
+            if (note) {
+                const notes = JSON.parse(localStorage.getItem('focusNotes') || '[]');
+                notes.push({
+                    id: Date.now(),
+                    taskId: currentTaskId,
+                    note: note,
+                    timestamp: new Date().toISOString(),
+                    sessionType: isWorkSession ? 'focus' : 'break'
+                });
+                
+                localStorage.setItem('focusNotes', JSON.stringify(notes));
+                showNotification('Note saved successfully!', 'success');
+            }
+        }
+        
+        function setRandomQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('focus-quote').textContent = `"${randomQuote.text}"`;
+            document.getElementById('focus-author').textContent = `— ${randomQuote.author}`;
+        }
+        
+        function newQuote() {
+            setRandomQuote();
+            showNotification('New motivational quote loaded', 'info');
+        }
+        
+        function toggleTips() {
+            const tipsPanel = document.getElementById('tips-panel');
+            tipsPanel.classList.toggle('show');
+        }
+        
+        function toggleMusic() {
+            const musicToggle = document.getElementById('music-toggle');
+            musicPlaying = !musicPlaying;
+            
+            if (musicPlaying) {
+                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: On';
+                // In a real app, you would start playing focus music here
+                showNotification('Focus music enabled', 'info');
+            } else {
+                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: Off';
+                // In a real app, you would stop the music here
+                showNotification('Focus music disabled', 'info');
+            }
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+                showNotification('Entered fullscreen mode', 'info');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    showNotification('Exited fullscreen mode', 'info');
+                }
+            }
+        }
+        
+        function exitFocusMode() {
+            // Save timer state
+            saveTimerState();
+            
+            // Return to previous page or home
+            const previousPage = sessionStorage.getItem('previousPage') || 'index.html';
+            window.location.href = previousPage;
+        }
+        
+        function saveTimerState() {
+            const timerState = {
+                timeLeft,
+                isWorkSession,
+                timerRunning
+            };
+            sessionStorage.setItem('focusTimerState', JSON.stringify(timerState));
+        }
+        
+        function playSound(type) {
+            // Simple sound implementation using Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                let frequency = 440; // A4 note
+                let duration = 0.1;
+                
+                switch(type) {
+                    case 'start':
+                        frequency = 523.25; // C5
+                        break;
+                    case 'pause':
+                        frequency = 392; // G4
+                        break;
+                    case 'complete':
+                        frequency = 659.25; // E5
+                        duration = 0.3;
+                        break;
+                }
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                // Audio not supported, silently fail
+            }
+        }
+        
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `focus-notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? 'var(--focus-success)' : 
+                                 type === 'warning' ? 'var(--focus-warning)' : 
+                                 type === 'error' ? '#ff6b6b' : 'var(--focus-primary)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+                max-width: 300px;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(event) {
+                // Space: Start/Pause timer
+                if (event.code === 'Space') {
+                    event.preventDefault();
+                    if (timerRunning) {
+                        pauseTimer();
+                    } else {
+                        startTimer();
+                    }
+                }
+                
+                // Escape: Exit focus mode
+                if (event.code === 'Escape') {
+                    exitFocusMode();
+                }
+                
+                // Enter: Mark task complete
+                if (event.code === 'Enter' && event.ctrlKey) {
+                    event.preventDefault();
+                    markTaskComplete();
+                }
+                
+                // N: Next task
+                if (event.code === 'KeyN' && event.ctrlKey) {
+                    event.preventDefault();
+                    skipTask();
+                }
+                
+                // +: Add 5 minutes
+                if (event.code === 'Equal' && event.ctrlKey) {
+                    event.preventDefault();
+                    addFiveMinutes();
+                }
+                
+                // R: Reset timer
+                if (event.code === 'KeyR' && event.ctrlKey) {
+                    event.preventDefault();
+                    resetTimer();
+                }
+                
+                // Q: New quote
+                if (event.code === 'KeyQ' && event.ctrlKey) {
+                    event.preventDefault();
+                    newQuote();
+                }
+            });
+        }
+        
+        // Add notification animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeFocusMode);
+        
+        // Save previous page before entering focus mode
+        if (!sessionStorage.getItem('previousPage')) {
+            sessionStorage.setItem('previousPage', document.referrer || 'index.html');
+        }
+        
+        // Handle fullscreen change
+        document.addEventListener('fullscreenchange', function() {
+            const fullscreenBtn = document.querySelector('[onclick="toggleFullscreen()"]');
+            if (fullscreenBtn) {
+                if (document.fullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

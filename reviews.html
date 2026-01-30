@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews & Reflection | SelfMaster</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Enhanced Reviews Page Styles */
+        .reviews-page {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            min-height: 100vh;
+        }
+        
+        /* Review Dashboard */
+        .review-dashboard {
+            padding: 2rem 0;
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            line-height: 1;
+        }
+        
+        .card-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .card-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        /* Review Templates Grid */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        
+        .template-card.recommended {
+            border-color: var(--accent);
+            position: relative;
+        }
+        
+        .recommended-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 3rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+        
+        .template-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .template-duration {
+            display: inline-block;
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .template-description {
+            color: var(--gray);
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+        
+        .template-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .template-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        
+        .template-features i {
+            color: var(--success);
+            font-size: 0.8rem;
+        }
+        
+        /* Active Review Interface */
+        .active-review-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        
+        .review-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .review-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .review-progress-container {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+        
+        .circular-progress {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        
+        .progress-ring {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            fill: none;
+            stroke: white;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .progress-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Review Questions */
+        .review-questions {
+            padding: 2rem;
+        }
+        
+        .question-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .section-title i {
+            font-size: 1.2rem;
+        }
+        
+        .question-group {
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+        
+        .question-hint {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .rating-scale {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .rating-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .rating-option:hover {
+            border-color: var(--primary-light);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .rating-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .rating-label {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            opacity: 0.8;
+        }
+        
+        /* Sentiment Selection */
+        .sentiment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .sentiment-option {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .sentiment-option:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .sentiment-option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .sentiment-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sentiment-label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        /* Action Items Section */
+        .action-items-section {
+            background: rgba(76, 201, 240, 0.05);
+            border: 2px dashed rgba(76, 201, 240, 0.3);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .action-item-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .action-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        .action-items-list {
+            margin-top: 1rem;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .action-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .action-text {
+            flex: 1;
+        }
+        
+        /* Review History */
+        .history-timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-light);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -11px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .timeline-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .timeline-type {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        /* Insights & Patterns */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .insight-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .insight-chart {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: var(--primary-light);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .chart-bar:hover {
+            background: var(--primary);
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .chart-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Review Actions */
+        .review-actions-bar {
+            background: white;
+            padding: 1.5rem;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .review-progress-container {
+                position: static;
+                transform: none;
+                margin-top: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .circular-progress {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .rating-scale {
+                flex-direction: column;
+            }
+            
+            .action-item-input {
+                flex-direction: column;
+            }
+            
+            .review-actions-bar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .navigation-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-pill {
+            background: white;
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-pill i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-number {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        /* Review Filters */
+        .review-filters {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-btn:hover:not(.active) {
+            border-color: var(--primary-light);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .empty-state p {
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+        
+        /* Review Summary */
+        .review-summary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 30%;
+            background: rgba(255, 255, 255, 0.1);
+            clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+        }
+        
+        .summary-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .summary-stat {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="reviews-page">
+    <!-- Header -->
+    <header>
+    <div class="container header-content">
+        <div class="logo">
+            <i class="fas fa-brain"></i>
+            <span><a href="index.html" style="color: inherit; text-decoration: none;">SelfMaster</a></span>
+        </div>
+        <nav id="main-nav">
+            <ul>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="calendar.html"><i class="fas fa-calendar"></i> Calendar</a></li>
+                <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
+                <li><a href="habits.html"><i class="fas fa-running"></i> Habits</a></li>
+                <li><a href="notes.html"><i class="fas fa-sticky-note"></i> Notes</a></li>
+                <li><a href="reviews.html"><i class="fas fa-chart-bar"></i> Reviews</a></li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-chart-bar"></i> Reviews & Reflection</h1>
+            <p>Reflect on your progress, gain insights, and plan for continuous improvement</p>
+        </div>
+    </section>
+
+    <!-- Review Dashboard -->
+    <section class="review-dashboard">
+        <div class="container">
+            <h2 class="section-title">Review Dashboard</h2>
+            
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-pill">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-content">
+                        <div class="stat-number" id="reviews-this-week">0</div>
+                        <div class="stat-label">This Week</div>
+                    </div>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-fire"></i>
+                    <div class="stat-content">
+                        <div class="stat-number" id="current-streak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="stat-content">
+                        <div class="stat-number" id="completion-rate">0%</div>
+                        <div class="stat-label">Completion</div>
+                    </div>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="stat-content">
+                        <div class="stat-number" id="productivity-trend">+0%</div>
+                        <div class="stat-label">Trend</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>Total Reviews</h3>
+                    </div>
+                    <div class="card-value" id="total-reviews">0</div>
+                    <div class="card-label">All-time reviews completed</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>12% from last month</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Insights Gained</h3>
+                    </div>
+                    <div class="card-value" id="total-insights">0</div>
+                    <div class="card-label">Key lessons learned</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>8 new this week</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Action Items</h3>
+                    </div>
+                    <div class="card-value" id="action-items">0</div>
+                    <div class="card-label">From recent reviews</div>
+                    <div class="card-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>15% incomplete</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-clock"></i>
+                        <h3>Time Spent</h3>
+                    </div>
+                    <div class="card-value" id="total-time">0h</div>
+                    <div class="card-label">Reflecting this month</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+2h from last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Templates -->
+    <section class="templates-section">
+        <div class="container">
+            <h2 class="section-title">Start a New Review</h2>
+            <p class="section-subtitle">Choose a template that fits your reflection needs</p>
+            
+            <!-- Review Filters -->
+            <div class="review-filters">
+                <button class="filter-btn active" data-filter="all">All Templates</button>
+                <button class="filter-btn" data-filter="quick">Quick Reviews</button>
+                <button class="filter-btn" data-filter="comprehensive">Comprehensive</button>
+                <button class="filter-btn" data-filter="specialized">Specialized</button>
+            </div>
+            
+            <div class="templates-grid">
+                <!-- Daily Review Template -->
+                <div class="template-card" data-template="daily" onclick="startReview('daily')">
+                    <div class="recommended-badge">RECOMMENDED</div>
+                    <div class="template-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h3>Daily Review</h3>
+                    <span class="template-duration">5-10 minutes</span>
+                    <p class="template-description">Quick reflection on today's achievements and tomorrow's priorities. Perfect for maintaining daily momentum.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Daily accomplishments</li>
+                        <li><i class="fas fa-check"></i> Energy & mood tracking</li>
+                        <li><i class="fas fa-check"></i> Next day planning</li>
+                    </ul>
+                </div>
+                
+                <!-- Weekly Review Template -->
+                <div class="template-card recommended" data-template="weekly" onclick="startReview('weekly')">
+                    <div class="recommended-badge">MOST POPULAR</div>
+                    <div class="template-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <h3>Weekly Review</h3>
+                    <span class="template-duration">30-45 minutes</span>
+                    <p class="template-description">Comprehensive review of the week's progress, lessons learned, and planning for the week ahead.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Goal progress tracking</li>
+                        <li><i class="fas fa-check"></i> Habit consistency analysis</li>
+                        <li><i class="fas fa-check"></i> Start/Stop/Continue method</li>
+                        <li><i class="fas fa-check"></i> Weekly action planning</li>
+                    </ul>
+                </div>
+                
+                <!-- Monthly Review Template -->
+                <div class="template-card" data-template="monthly" onclick="startReview('monthly')">
+                    <div class="template-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Monthly Review</h3>
+                    <span class="template-duration">60-90 minutes</span>
+                    <p class="template-description">Strategic assessment of monthly goals, performance patterns, and planning for the next month.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Goal achievement analysis</li>
+                        <li><i class="fas fa-check"></i> Performance metrics</li>
+                        <li><i class="fas fa-check"></i> Learning & growth assessment</li>
+                        <li><i class="fas fa-check"></i> Monthly action plan</li>
+                    </ul>
+                </div>
+                
+                <!-- Project Review Template -->
+                <div class="template-card" data-template="project" onclick="startReview('project')">
+                    <div class="template-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3>Project Review</h3>
+                    <span class="template-duration">20-30 minutes</span>
+                    <p class="template-description">Focused review of project progress, challenges, and next steps. Perfect for project milestones.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Milestone assessment</li>
+                        <li><i class="fas fa-check"></i> Risk & issue analysis</li>
+                        <li><i class="fas fa-check"></i> Team performance review</li>
+                        <li><i class="fas fa-check"></i> Project planning adjustment</li>
+                    </ul>
+                </div>
+                
+                <!-- Career Review Template -->
+                <div class="template-card" data-template="career" onclick="startReview('career')">
+                    <div class="template-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Career Review</h3>
+                    <span class="template-duration">45-60 minutes</span>
+                    <p class="template-description">Strategic review of career progress, skills development, and professional growth opportunities.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Skill gap analysis</li>
+                        <li><i class="fas fa-check"></i> Career goal alignment</li>
+                        <li><i class="fas fa-check"></i> Professional development plan</li>
+                        <li><i class="fas fa-check"></i> Networking assessment</li>
+                    </ul>
+                </div>
+                
+                <!-- Health & Wellness Review -->
+                <div class="template-card" data-template="health" onclick="startReview('health')">
+                    <div class="template-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Health & Wellness</h3>
+                    <span class="template-duration">15-20 minutes</span>
+                    <p class="template-description">Review of physical and mental wellbeing, exercise routines, nutrition, and self-care practices.</p>
+                    <ul class="template-features">
+                        <li><i class="fas fa-check"></i> Health metrics tracking</li>
+                        <li><i class="fas fa-check"></i> Exercise & nutrition review</li>
+                        <li><i class="fas fa-check"></i> Stress & energy levels</li>
+                        <li><i class="fas fa-check"></i> Wellness improvement plan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Review Section (Initially Hidden) -->
+    <section id="active-review-section" class="active-review-section" style="display: none;">
+        <div class="container">
+            <div class="active-review-container">
+                <div class="review-header">
+                    <div>
+                        <h2 class="review-title" id="active-review-title">Weekly Review</h2>
+                        <p class="review-subtitle" id="active-review-subtitle">Week of December 11-17, 2023 • Estimated: 30-45 minutes</p>
+                    </div>
+                    <div class="review-progress-container">
+                        <div class="circular-progress">
+                            <svg class="progress-ring" width="80" height="80">
+                                <circle class="progress-ring-circle" cx="40" cy="40" r="36" stroke-dasharray="226.1946710584651" stroke-dashoffset="0"></circle>
+                            </svg>
+                            <div class="progress-value" id="review-progress">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="review-questions" id="review-questions">
+                    <!-- Questions will be dynamically inserted here -->
+                </div>
+                
+                <!-- Action Items Section -->
+                <div class="action-items-section">
+                    <h3><i class="fas fa-tasks"></i> Action Items from This Review</h3>
+                    <p class="question-hint">Based on your answers, here are suggested action items. Add more as needed.</p>
+                    
+                    <div class="action-item-input">
+                        <input type="text" class="action-input" id="new-action-item" placeholder="Enter a new action item...">
+                        <button class="btn" onclick="addActionItem()">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    
+                    <div class="action-items-list" id="action-items-list">
+                        <!-- Action items will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <!-- Review Summary -->
+                <div class="review-summary" id="review-summary" style="display: none;">
+                    <div class="summary-overlay"></div>
+                    <div class="summary-content">
+                        <h3><i class="fas fa-chart-pie"></i> Review Summary</h3>
+                        <div class="summary-stats" id="summary-stats">
+                            <!-- Summary stats will be dynamically added -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="review-actions-bar">
+                    <div class="navigation-buttons">
+                        <button class="btn btn-outline" onclick="previousQuestion()" id="prev-btn">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn" onclick="nextQuestion()" id="next-btn">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button class="btn btn-accent" onclick="saveReview()" id="save-btn">
+                            <i class="fas fa-save"></i> Save Review
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Review History -->
+    <section class="history-section">
+        <div class="container">
+            <h2 class="section-title">Review History</h2>
+            
+            <div class="review-filters">
+                <button class="filter-btn active" data-filter="all">All Reviews</button>
+                <button class="filter-btn" data-filter="daily">Daily</button>
+                <button class="filter-btn" data-filter="weekly">Weekly</button>
+                <button class="filter-btn" data-filter="monthly">Monthly</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+                <button class="filter-btn" data-filter="incomplete">Incomplete</button>
+            </div>
+            
+            <div class="history-timeline" id="history-timeline">
+                <!-- Timeline items will be dynamically added here -->
+                <div class="timeline-line"></div>
+                
+                <div class="empty-state" id="history-empty" style="display: none;">
+                    <i class="fas fa-history"></i>
+                    <h3>No Review History</h3>
+                    <p>Complete your first review to see it here!</p>
+                    <button class="btn" onclick="startReview('weekly')">
+                        <i class="fas fa-plus"></i> Start Your First Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Insights & Patterns -->
+    <section class="insights-section">
+        <div class="container">
+            <h2 class="section-title">Insights & Patterns</h2>
+            <p class="section-subtitle">Discover trends and patterns from your review history</p>
+            
+            <div class="insights-grid" id="insights-grid">
+                <!-- Insights will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Tips -->
+    <section class="tips-section">
+        <div class="container">
+            <div class="tips-card">
+                <h3><i class="fas fa-lightbulb"></i> Tips for Effective Reviews</h3>
+                <div class="tips-content">
+                    <div class="tip">
+                        <h4><i class="fas fa-clock"></i> Be Consistent</h4>
+                        <p>Schedule regular review sessions and stick to them. Consistency builds the habit.</p>
+                    </div>
+                    <div class="tip">
+                        <h4><i class="fas fa-heart"></i> Be Honest</h4>
+                        <p>Honest self-reflection leads to genuine growth. Don't sugarcoat your challenges.</p>
+                    </div>
+                    <div class="tip">
+                        <h4><i class="fas fa-trophy"></i> Celebrate Wins</h4>
+                        <p>Always acknowledge your achievements, no matter how small. Celebration fuels motivation.</p>
+                    </div>
+                    <div class="tip">
+                        <h4><i class="fas fa-forward"></i> Focus on Action</h4>
+                        <p>Every review should result in specific, actionable next steps for improvement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>SelfMaster</h4>
+                    <p>Your comprehensive personal management system designed to help you take control of your life, build better habits, and achieve your goals.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Review Methods</h4>
+                    <ul>
+                        <li><a href="#">5-4-3-2-1 Method</a></li>
+                        <li><a href="#">Start-Stop-Continue</a></li>
+                        <li><a href="#">Rose-Bud-Thorn</a></li>
+                        <li><a href="#">SWOT Analysis</a></li>
+                        <li><a href="#">Wheel of Life</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Reflection Tools</h4>
+                    <ul>
+                        <li><a href="#">Journal Prompts</a></li>
+                        <li><a href="#">Progress Tracking</a></li>
+                        <li><a href="#">Decision Logs</a></li>
+                        <li><a href="#">Learning Journals</a></li>
+                        <li><a href="#">Gratitude Practice</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SelfMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Enhanced Reviews Page JavaScript
+        let currentReview = null;
+        let currentReviewType = null;
+        let currentQuestionIndex = 0;
+        let reviewAnswers = {};
+        let actionItems = [];
+        
+        // Review templates with enhanced questions
+        const reviewTemplates = {
+            daily: {
+                title: "Daily Review",
+                subtitle: "Today's reflection • 5-10 minutes",
+                duration: "5-10 minutes",
+                sections: [
+                    {
+                        title: "Today's Accomplishments",
+                        icon: "trophy",
+                        questions: [
+                            {
+                                id: "accomplishments",
+                                text: "What were my top 3 accomplishments today?",
+                                type: "textarea",
+                                hint: "Focus on meaningful progress, not just busy work",
+                                rows: 4
+                            },
+                            {
+                                id: "moment",
+                                text: "What was my proudest moment today?",
+                                type: "textarea",
+                                hint: "A moment where you felt particularly effective or satisfied",
+                                rows: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Energy & Wellbeing",
+                        icon: "battery-full",
+                        questions: [
+                            {
+                                id: "energy_level",
+                                text: "What was my energy level today?",
+                                type: "rating",
+                                options: [
+                                    { value: 1, label: "Exhausted" },
+                                    { value: 2, label: "Low" },
+                                    { value: 3, label: "Moderate" },
+                                    { value: 4, label: "High" },
+                                    { value: 5, label: "Excellent" }
+                                ]
+                            },
+                            {
+                                id: "mood",
+                                text: "How would I describe my overall mood today?",
+                                type: "sentiment",
+                                options: [
+                                    { icon: "fa-face-frown", label: "Struggling" },
+                                    { icon: "fa-face-meh", label: "Neutral" },
+                                    { icon: "fa-face-smile", label: "Good" },
+                                    { icon: "fa-face-grin", label: "Great" },
+                                    { icon: "fa-face-grin-stars", label: "Excellent" }
+                                ]
+                            },
+                            {
+                                id: "wellbeing",
+                                text: "What contributed to my energy and mood today?",
+                                type: "textarea",
+                                hint: "Consider sleep, nutrition, exercise, social interactions, work satisfaction",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Learning & Growth",
+                        icon: "graduation-cap",
+                        questions: [
+                            {
+                                id: "learned",
+                                text: "What did I learn today?",
+                                type: "textarea",
+                                hint: "New knowledge, skills, or insights gained",
+                                rows: 3
+                            },
+                            {
+                                id: "mistakes",
+                                text: "What mistakes or challenges did I encounter?",
+                                type: "textarea",
+                                hint: "What can I learn from these experiences?",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Gratitude & Positivity",
+                        icon: "heart",
+                        questions: [
+                            {
+                                id: "gratitude",
+                                text: "What am I grateful for today?",
+                                type: "textarea",
+                                hint: "Big or small things that brought you joy or appreciation",
+                                rows: 3
+                            },
+                            {
+                                id: "positivity",
+                                text: "What went well today that I want to acknowledge?",
+                                type: "textarea",
+                                hint: "Celebrate the wins, no matter how small",
+                                rows: 2
+                            }
+                        ]
+                    },
+                    {
+                        title: "Tomorrow's Planning",
+                        icon: "calendar-day",
+                        questions: [
+                            {
+                                id: "priorities",
+                                text: "What are my top 3 priorities for tomorrow?",
+                                type: "textarea",
+                                hint: "Focus on what will make the biggest impact",
+                                rows: 3
+                            },
+                            {
+                                id: "improvements",
+                                text: "What one thing could I do better tomorrow?",
+                                type: "textarea",
+                                hint: "Based on today's reflections",
+                                rows: 2
+                            }
+                        ]
+                    }
+                ]
+            },
+            weekly: {
+                title: "Weekly Review",
+                subtitle: "Week of [Date] • 30-45 minutes",
+                duration: "30-45 minutes",
+                sections: [
+                    {
+                        title: "Weekly Accomplishments",
+                        icon: "trophy",
+                        questions: [
+                            {
+                                id: "major_accomplishments",
+                                text: "What were my major accomplishments this week?",
+                                type: "textarea",
+                                hint: "List your most significant achievements and progress",
+                                rows: 5
+                            },
+                            {
+                                id: "goal_progress",
+                                text: "How did I progress toward my weekly goals?",
+                                type: "textarea",
+                                hint: "What goals were achieved? What needs more attention?",
+                                rows: 4
+                            }
+                        ]
+                    },
+                    {
+                        title: "Performance Analysis",
+                        icon: "chart-line",
+                        questions: [
+                            {
+                                id: "productivity",
+                                text: "How productive was I this week?",
+                                type: "rating",
+                                options: [
+                                    { value: 1, label: "Very Low" },
+                                    { value: 2, label: "Low" },
+                                    { value: 3, label: "Average" },
+                                    { value: 4, label: "High" },
+                                    { value: 5, label: "Excellent" }
+                                ]
+                            },
+                            {
+                                id: "focus_areas",
+                                text: "Where did I spend most of my time and energy?",
+                                type: "textarea",
+                                hint: "Work, personal projects, learning, relationships, etc.",
+                                rows: 3
+                            },
+                            {
+                                id: "distractions",
+                                text: "What were my biggest distractions or time-wasters?",
+                                type: "textarea",
+                                hint: "Identify patterns that reduced productivity",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Habits & Routines",
+                        icon: "running",
+                        questions: [
+                            {
+                                id: "habit_consistency",
+                                text: "How consistent was I with my key habits?",
+                                type: "textarea",
+                                hint: "Which habits served me well? Which need improvement?",
+                                rows: 4
+                            },
+                            {
+                                id: "routine_effectiveness",
+                                text: "What worked well in my daily routines?",
+                                type: "textarea",
+                                hint: "Morning routines, work blocks, evening routines",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Learning & Growth",
+                        icon: "graduation-cap",
+                        questions: [
+                            {
+                                id: "key_learnings",
+                                text: "What were the most important lessons I learned this week?",
+                                type: "textarea",
+                                hint: "Insights about work, relationships, self, or skills",
+                                rows: 4
+                            },
+                            {
+                                id: "challenges_overcome",
+                                text: "What challenges did I overcome this week?",
+                                type: "textarea",
+                                hint: "How did I handle difficult situations?",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Start, Stop, Continue",
+                        icon: "sync",
+                        questions: [
+                            {
+                                id: "start_doing",
+                                text: "What should I START doing next week?",
+                                type: "textarea",
+                                hint: "New habits, approaches, or activities",
+                                rows: 3
+                            },
+                            {
+                                id: "stop_doing",
+                                text: "What should I STOP doing next week?",
+                                type: "textarea",
+                                hint: "Ineffective habits, unproductive behaviors",
+                                rows: 3
+                            },
+                            {
+                                id: "continue_doing",
+                                text: "What should I CONTINUE doing next week?",
+                                type: "textarea",
+                                hint: "What's working well that I should maintain?",
+                                rows: 3
+                            }
+                        ]
+                    },
+                    {
+                        title: "Next Week Planning",
+                        icon: "calendar-week",
+                        questions: [
+                            {
+                                id: "weekly_goals",
+                                text: "What are my top 3 goals for next week?",
+                                type: "textarea",
+                                hint: "Make them specific and achievable",
+                                rows: 4
+                            },
+                            {
+                                id: "weekly_rating",
+                                text: "How would I rate this week overall?",
+                                type: "rating",
+                                options: [
+                                    { value: 1, label: "Very Poor" },
+                                    { value: 2, label: "Poor" },
+                                    { value: 3, label: "Average" },
+                                    { value: 4, label: "Good" },
+                                    { value: 5, label: "Excellent" }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            monthly: {
+                title: "Monthly Review",
+                subtitle: "Month of [Month] • 60-90 minutes",
+                duration: "60-90 minutes",
+                sections: [
+                    {
+                        title: "Monthly Achievements",
+                        icon: "medal",
+                        questions: [
+                            {
+                                id: "major_achievements",
+                                text: "What were my biggest achievements this month?",
+                                type: "textarea",
+                                hint: "List significant accomplishments and milestones",
+                                rows: 6
+                            },
+                            {
+                                id: "goal_review",
+                                text: "How did I progress on my monthly goals?",
+                                type: "textarea",
+                                hint: "Which goals were achieved? Which need more work?",
+                                rows: 5
+                            }
+                        ]
+                    },
+                    {
+                        title: "Growth & Development",
+                        icon: "seedling",
+                        questions: [
+                            {
+                                id: "skills_developed",
+                                text: "What new skills or knowledge did I develop?",
+                                type: "textarea",
+                                hint: "Professional and personal growth",
+                                rows: 4
+                            },
+                            {
+                                id: "growth_areas",
+                                text: "In what areas did I experience the most growth?",
+                                type: "textarea",
+                                hint: "Consider skills, mindset, relationships, health",
+                                rows: 4
+                            }
+                        ]
+                    },
+                    {
+                        title: "Challenges & Solutions",
+                        icon: "puzzle-piece",
+                        questions: [
+                            {
+                                id: "biggest_challenges",
+                                text: "What were the biggest challenges I faced?",
+                                type: "textarea",
+                                hint: "Professional, personal, or health challenges",
+                                rows: 4
+                            },
+                            {
+                                id: "solutions_found",
+                                text: "How did I overcome these challenges?",
+                                type: "textarea",
+                                hint: "What strategies or resources helped?",
+                                rows: 4
+                            }
+                        ]
+                    },
+                    {
+                        title: "Habit Analysis",
+                        icon: "chart-bar",
+                        questions: [
+                            {
+                                id: "habit_success",
+                                text: "Which habits served me well this month?",
+                                type: "textarea",
+                                hint: "Habits that contributed to success and wellbeing",
+                                rows: 4
+                            },
+                            {
+                                id: "habit_improvement",
+                                text: "Which habits need improvement or replacement?",
+                                type: "textarea",
+                                hint: "Ineffective or counterproductive habits",
+                                rows: 4
+                            }
+                        ]
+                    },
+                    {
+                        title: "Life Balance",
+                        icon: "balance-scale",
+                        questions: [
+                            {
+                                id: "balance_assessment",
+                                text: "How balanced was my life this month?",
+                                type: "rating",
+                                options: [
+                                    { value: 1, label: "Very Unbalanced" },
+                                    { value: 2, label: "Unbalanced" },
+                                    { value: 3, label: "Moderate" },
+                                    { value: 4, label: "Balanced" },
+                                    { value: 5, label: "Very Balanced" }
+                                ]
+                            },
+                            {
+                                id: "balance_areas",
+                                text: "Which areas of life need more attention?",
+                                type: "textarea",
+                                hint: "Work, health, relationships, personal growth, leisure",
+                                rows: 4
+                            }
+                        ]
+                    },
+                    {
+                        title: "Next Month Planning",
+                        icon: "calendar-alt",
+                        questions: [
+                            {
+                                id: "next_month_goals",
+                                text: "What are my top 3 goals for next month?",
+                                type: "textarea",
+                                hint: "Make them SMART (Specific, Measurable, Achievable, Relevant, Time-bound)",
+                                rows: 5
+                            },
+                            {
+                                id: "monthly_rating",
+                                text: "How would I rate this month overall?",
+                                type: "rating",
+                                options: [
+                                    { value: 1, label: "Very Poor" },
+                                    { value: 2, label: "Poor" },
+                                    { value: 3, label: "Average" },
+                                    { value: 4, label: "Good" },
+                                    { value: 5, label: "Excellent" }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReviewDashboard();
+            loadReviewHistory();
+            loadInsights();
+            
+            // Set up template filters
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    filterTemplates(filter);
+                });
+            });
+            
+            // Set up auto-save
+            setInterval(autoSaveReview, 30000); // Auto-save every 30 seconds
+            
+            // Load any unsaved review
+            loadUnsavedReview();
+        });
+        
+        function loadReviewDashboard() {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            
+            // Calculate stats
+            const totalReviews = reviews.length;
+            const thisWeekReviews = getThisWeekReviews(reviews).length;
+            const streak = calculateStreak(reviews);
+            const completionRate = calculateCompletionRate(reviews);
+            
+            // Update dashboard
+            document.getElementById('total-reviews').textContent = totalReviews;
+            document.getElementById('reviews-this-week').textContent = thisWeekReviews;
+            document.getElementById('current-streak').textContent = streak;
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+            
+            // Calculate additional stats
+            const totalInsights = reviews.reduce((count, review) => {
+                return count + (review.answers ? Object.keys(review.answers).length : 0);
+            }, 0);
+            
+            const actionItemCount = reviews.reduce((count, review) => {
+                return count + (review.actionItems ? review.actionItems.length : 0);
+            }, 0);
+            
+            const totalTime = reviews.reduce((time, review) => {
+                return time + (review.duration || 0);
+            }, 0);
+            
+            document.getElementById('total-insights').textContent = totalInsights;
+            document.getElementById('action-items').textContent = actionItemCount;
+            document.getElementById('total-time').textContent = Math.floor(totalTime / 60) + 'h';
+        }
+        
+        function getThisWeekReviews(reviews) {
+            const now = new Date();
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            return reviews.filter(review => {
+                const reviewDate = new Date(review.date);
+                return reviewDate >= startOfWeek;
+            });
+        }
+        
+        function calculateStreak(reviews) {
+            if (reviews.length === 0) return 0;
+            
+            // Sort reviews by date (newest first)
+            const sortedReviews = reviews
+                .map(r => new Date(r.date))
+                .sort((a, b) => b - a);
+            
+            let streak = 0;
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            
+            // Check for reviews on consecutive days
+            for (let i = 0; i < sortedReviews.length; i++) {
+                const reviewDate = new Date(sortedReviews[i]);
+                reviewDate.setHours(0, 0, 0, 0);
+                
+                const diffDays = Math.floor((currentDate - reviewDate) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === streak) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function calculateCompletionRate(reviews) {
+            if (reviews.length === 0) return 0;
+            
+            const completedReviews = reviews.filter(r => r.completed).length;
+            return Math.round((completedReviews / reviews.length) * 100);
+        }
+        
+        function filterTemplates(filter) {
+            const templates = document.querySelectorAll('.template-card');
+            
+            templates.forEach(template => {
+                const templateType = template.dataset.template;
+                
+                if (filter === 'all') {
+                    template.style.display = 'block';
+                } else if (filter === 'quick') {
+                    if (['daily', 'health'].includes(templateType)) {
+                        template.style.display = 'block';
+                    } else {
+                        template.style.display = 'none';
+                    }
+                } else if (filter === 'comprehensive') {
+                    if (['weekly', 'monthly', 'career'].includes(templateType)) {
+                        template.style.display = 'block';
+                    } else {
+                        template.style.display = 'none';
+                    }
+                } else if (filter === 'specialized') {
+                    if (['project', 'health'].includes(templateType)) {
+                        template.style.display = 'block';
+                    } else {
+                        template.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        function startReview(type) {
+            currentReviewType = type;
+            currentQuestionIndex = 0;
+            reviewAnswers = {};
+            actionItems = [];
+            
+            const template = reviewTemplates[type];
+            if (!template) {
+                alert('Review template not found');
+                return;
+            }
+            
+            // Update title and subtitle
+            document.getElementById('active-review-title').textContent = template.title;
+            
+            let subtitle = template.subtitle;
+            if (type === 'weekly') {
+                const weekStart = getWeekStartDate();
+                subtitle = `Week of ${weekStart} • ${template.duration}`;
+            } else if (type === 'monthly') {
+                const monthName = new Date().toLocaleDateString('en-US', { month: 'long' });
+                subtitle = `Month of ${monthName} • ${template.duration}`;
+            }
+            
+            document.getElementById('active-review-subtitle').textContent = subtitle;
+            
+            // Generate questions
+            generateQuestions(template);
+            
+            // Show active review section
+            document.getElementById('active-review-section').style.display = 'block';
+            
+            // Hide templates section
+            document.querySelector('.templates-section').style.display = 'none';
+            
+            // Scroll to review section
+            document.getElementById('active-review-section').scrollIntoView({ behavior: 'smooth' });
+            
+            // Update progress
+            updateProgress();
+        }
+        
+        function getWeekStartDate() {
+            const now = new Date();
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            return startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function generateQuestions(template) {
+            const questionsContainer = document.getElementById('review-questions');
+            questionsContainer.innerHTML = '';
+            
+            template.sections.forEach((section, sectionIndex) => {
+                const sectionElement = document.createElement('div');
+                sectionElement.className = 'question-section fade-in';
+                sectionElement.style.animationDelay = `${sectionIndex * 0.1}s`;
+                
+                let sectionHTML = `
+                    <div class="section-title">
+                        <i class="fas fa-${section.icon}"></i>
+                        <h3>${section.title}</h3>
+                    </div>
+                `;
+                
+                section.questions.forEach((question, qIndex) => {
+                    const questionId = `q_${sectionIndex}_${qIndex}`;
+                    let questionHTML = `
+                        <div class="question-item" id="${questionId}">
+                            <div class="question-text">${question.text}</div>
+                            ${question.hint ? `<div class="question-hint">${question.hint}</div>` : ''}
+                    `;
+                    
+                    if (question.type === 'textarea') {
+                        questionHTML += `
+                            <textarea class="answer-input" 
+                                      data-question-id="${question.id}"
+                                      rows="${question.rows || 3}"
+                                      placeholder="Type your answer here..."
+                                      oninput="updateAnswer('${question.id}', this.value)">${reviewAnswers[question.id] || ''}</textarea>
+                        `;
+                    } else if (question.type === 'rating') {
+                        questionHTML += `
+                            <div class="rating-scale">
+                        `;
+                        
+                        question.options.forEach((option, optIndex) => {
+                            const isSelected = reviewAnswers[question.id] == option.value;
+                            questionHTML += `
+                                <div class="rating-option ${isSelected ? 'selected' : ''}" 
+                                     onclick="selectRating('${question.id}', ${option.value})">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">${'★'.repeat(option.value)}</div>
+                                    <div class="rating-label">${option.label}</div>
+                                </div>
+                            `;
+                        });
+                        
+                        questionHTML += `</div>`;
+                    } else if (question.type === 'sentiment') {
+                        questionHTML += `
+                            <div class="sentiment-grid">
+                        `;
+                        
+                        question.options.forEach((option, optIndex) => {
+                            const isSelected = reviewAnswers[question.id] === option.label;
+                            questionHTML += `
+                                <div class="sentiment-option ${isSelected ? 'selected' : ''}" 
+                                     onclick="selectSentiment('${question.id}', '${option.label}')">
+                                    <div class="sentiment-icon">
+                                        <i class="fas ${option.icon}"></i>
+                                    </div>
+                                    <div class="sentiment-label">${option.label}</div>
+                                </div>
+                            `;
+                        });
+                        
+                        questionHTML += `</div>`;
+                    }
+                    
+                    questionHTML += `</div>`;
+                    sectionHTML += questionHTML;
+                });
+                
+                sectionElement.innerHTML = sectionHTML;
+                questionsContainer.appendChild(sectionElement);
+            });
+        }
+        
+        function updateAnswer(questionId, value) {
+            reviewAnswers[questionId] = value;
+            updateProgress();
+            saveToLocalStorage();
+        }
+        
+        function selectRating(questionId, value) {
+            reviewAnswers[questionId] = value;
+            
+            // Update UI
+            document.querySelectorAll(`[data-question-id="${questionId}"] .rating-option`).forEach(option => {
+                const optionValue = option.onclick.toString().match(/\d+/)[0];
+                option.classList.toggle('selected', optionValue == value);
+            });
+            
+            updateProgress();
+            saveToLocalStorage();
+        }
+        
+        function selectSentiment(questionId, value) {
+            reviewAnswers[questionId] = value;
+            
+            // Update UI
+            document.querySelectorAll(`[data-question-id="${questionId}"] .sentiment-option`).forEach(option => {
+                const sentiment = option.onclick.toString().match(/'([^']+)'/)[1];
+                option.classList.toggle('selected', sentiment === value);
+            });
+            
+            updateProgress();
+            saveToLocalStorage();
+        }
+        
+        function updateProgress() {
+            if (!currentReviewType) return;
+            
+            const template = reviewTemplates[currentReviewType];
+            let totalQuestions = 0;
+            let answeredQuestions = 0;
+            
+            template.sections.forEach(section => {
+                section.questions.forEach(question => {
+                    totalQuestions++;
+                    if (reviewAnswers[question.id] && reviewAnswers[question.id].toString().trim() !== '') {
+                        answeredQuestions++;
+                    }
+                });
+            });
+            
+            const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+            
+            // Update progress ring
+            const circle = document.querySelector('.progress-ring-circle');
+            const radius = 36;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            document.getElementById('review-progress').textContent = `${progress}%`;
+            
+            // Show/hide summary based on progress
+            if (progress >= 50) {
+                generateSummary();
+                document.getElementById('review-summary').style.display = 'block';
+            } else {
+                document.getElementById('review-summary').style.display = 'none';
+            }
+        }
+        
+        function generateSummary() {
+            const summaryStats = document.getElementById('summary-stats');
+            summaryStats.innerHTML = '';
+            
+            // Calculate sentiment from answers
+            let sentimentScore = 0;
+            let sentimentCount = 0;
+            
+            Object.values(reviewAnswers).forEach(answer => {
+                if (typeof answer === 'string' && answer.length > 0) {
+                    // Simple sentiment analysis (very basic)
+                    const positiveWords = ['good', 'great', 'excellent', 'happy', 'productive', 'achieved', 'progress', 'learned'];
+                    const negativeWords = ['bad', 'poor', 'struggled', 'difficult', 'challenging', 'failed', 'stressed'];
+                    
+                    const lowerAnswer = answer.toLowerCase();
+                    let score = 0;
+                    
+                    positiveWords.forEach(word => {
+                        if (lowerAnswer.includes(word)) score++;
+                    });
+                    
+                    negativeWords.forEach(word => {
+                        if (lowerAnswer.includes(word)) score--;
+                    });
+                    
+                    sentimentScore += score;
+                    sentimentCount++;
+                }
+            });
+            
+            const averageSentiment = sentimentCount > 0 ? (sentimentScore / sentimentCount).toFixed(1) : 0;
+            
+            // Count words
+            const totalWords = Object.values(reviewAnswers)
+                .filter(answer => typeof answer === 'string')
+                .reduce((count, answer) => count + answer.split(/\s+/).length, 0);
+            
+            // Generate summary stats
+            const stats = [
+                { label: 'Questions Answered', value: Object.keys(reviewAnswers).length, icon: 'check-circle' },
+                { label: 'Total Words', value: totalWords, icon: 'file-word' },
+                { label: 'Sentiment Score', value: averageSentiment, icon: 'smile' },
+                { label: 'Action Items', value: actionItems.length, icon: 'tasks' }
+            ];
+            
+            stats.forEach(stat => {
+                const statHTML = `
+                    <div class="summary-stat">
+                        <div class="summary-value">${stat.value}</div>
+                        <div class="summary-label">${stat.label}</div>
+                    </div>
+                `;
+                summaryStats.innerHTML += statHTML;
+            });
+        }
+        
+        function addActionItem() {
+            const input = document.getElementById('new-action-item');
+            const text = input.value.trim();
+            
+            if (!text) {
+                alert('Please enter an action item');
+                return;
+            }
+            
+            const actionItem = {
+                id: Date.now(),
+                text: text,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            actionItems.push(actionItem);
+            renderActionItems();
+            input.value = '';
+            
+            saveToLocalStorage();
+        }
+        
+        function renderActionItems() {
+            const container = document.getElementById('action-items-list');
+            container.innerHTML = '';
+            
+            if (actionItems.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); font-style: italic;">No action items yet. Add some based on your reflections.</p>';
+                return;
+            }
+            
+            actionItems.forEach(item => {
+                const itemHTML = `
+                    <div class="action-item">
+                        <input type="checkbox" class="action-checkbox" ${item.completed ? 'checked' : ''} 
+                               onchange="toggleActionItem(${item.id})">
+                        <div class="action-text ${item.completed ? 'completed' : ''}">${item.text}</div>
+                        <button class="action-btn" onclick="removeActionItem(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+        }
+        
+        function toggleActionItem(id) {
+            const item = actionItems.find(item => item.id === id);
+            if (item) {
+                item.completed = !item.completed;
+                renderActionItems();
+                saveToLocalStorage();
+            }
+        }
+        
+        function removeActionItem(id) {
+            actionItems = actionItems.filter(item => item.id !== id);
+            renderActionItems();
+            saveToLocalStorage();
+        }
+        
+        function nextQuestion() {
+            const questions = document.querySelectorAll('.question-section');
+            if (currentQuestionIndex < questions.length - 1) {
+                questions[currentQuestionIndex].style.display = 'none';
+                currentQuestionIndex++;
+                questions[currentQuestionIndex].style.display = 'block';
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').style.display = 'block';
+                if (currentQuestionIndex === questions.length - 1) {
+                    document.getElementById('next-btn').style.display = 'none';
+                }
+                
+                // Scroll to current question
+                questions[currentQuestionIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        function previousQuestion() {
+            const questions = document.querySelectorAll('.question-section');
+            if (currentQuestionIndex > 0) {
+                questions[currentQuestionIndex].style.display = 'none';
+                currentQuestionIndex--;
+                questions[currentQuestionIndex].style.display = 'block';
+                
+                // Update navigation buttons
+                document.getElementById('next-btn').style.display = 'block';
+                if (currentQuestionIndex === 0) {
+                    document.getElementById('prev-btn').style.display = 'none';
+                }
+                
+                // Scroll to current question
+                questions[currentQuestionIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        function saveReview() {
+            if (!currentReviewType) return;
+            
+            const template = reviewTemplates[currentReviewType];
+            
+            const review = {
+                id: Date.now(),
+                type: currentReviewType,
+                title: template.title,
+                date: new Date().toISOString(),
+                answers: { ...reviewAnswers },
+                actionItems: [...actionItems],
+                completed: true,
+                duration: estimateDuration(),
+                sentiment: calculateOverallSentiment()
+            };
+            
+            // Save to localStorage
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            reviews.push(review);
+            localStorage.setItem('reviews', JSON.stringify(reviews));
+            
+            // Clear unsaved review
+            localStorage.removeItem('unsavedReview');
+            
+            // Create tasks from action items
+            createTasksFromActionItems(review.actionItems, `${template.title} - ${new Date().toLocaleDateString()}`);
+            
+            // Show success message
+            showNotification('Review saved successfully!', 'success');
+            
+            // Reset and go back to templates
+            resetReview();
+            
+            // Reload dashboard and history
+            loadReviewDashboard();
+            loadReviewHistory();
+            loadInsights();
+        }
+        
+        function estimateDuration() {
+            // Simple duration estimation based on word count
+            const totalWords = Object.values(reviewAnswers)
+                .filter(answer => typeof answer === 'string')
+                .reduce((count, answer) => count + answer.split(/\s+/).length, 0);
+            
+            // Assuming average typing speed of 40 words per minute
+            return Math.round((totalWords / 40) * 60); // in seconds
+        }
+        
+        function calculateOverallSentiment() {
+            let score = 0;
+            let count = 0;
+            
+            Object.entries(reviewAnswers).forEach(([key, value]) => {
+                if (typeof value === 'string' && value.trim()) {
+                    // Check for positive indicators
+                    const positiveIndicators = ['good', 'great', 'excellent', 'happy', 'proud', 'grateful', 'progress', 'learned', 'achieved'];
+                    const negativeIndicators = ['bad', 'poor', 'difficult', 'struggle', 'challenge', 'failed', 'stress', 'overwhelmed'];
+                    
+                    const lowerValue = value.toLowerCase();
+                    let questionScore = 0;
+                    
+                    positiveIndicators.forEach(word => {
+                        if (lowerValue.includes(word)) questionScore++;
+                    });
+                    
+                    negativeIndicators.forEach(word => {
+                        if (lowerValue.includes(word)) questionScore--;
+                    });
+                    
+                    score += questionScore;
+                    count++;
+                }
+            });
+            
+            return count > 0 ? (score / count).toFixed(2) : 0;
+        }
+        
+        function createTasksFromActionItems(actionItems, source) {
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            
+            actionItems.forEach(item => {
+                if (!item.completed) {
+                    const task = {
+                        id: Date.now() + Math.random(),
+                        title: item.text.substring(0, 100),
+                        description: `From review: ${source}`,
+                        priority: 'medium',
+                        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Due in 7 days
+                        completed: false,
+                        createdAt: new Date().toISOString(),
+                        tags: ['review', 'action-item'],
+                        category: 'personal'
+                    };
+                    
+                    tasks.push(task);
+                }
+            });
+            
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        
+        function resetReview() {
+            currentReviewType = null;
+            currentQuestionIndex = 0;
+            reviewAnswers = {};
+            actionItems = [];
+            
+            // Hide active review section
+            document.getElementById('active-review-section').style.display = 'none';
+            
+            // Show templates section
+            document.querySelector('.templates-section').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function loadReviewHistory() {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            const timeline = document.getElementById('history-timeline');
+            const emptyState = document.getElementById('history-empty');
+            
+            // Clear existing content except the line and empty state
+            const existingItems = timeline.querySelectorAll('.timeline-item');
+            existingItems.forEach(item => item.remove());
+            
+            if (reviews.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // Sort reviews by date (newest first)
+            const sortedReviews = reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Display last 10 reviews
+            sortedReviews.slice(0, 10).forEach(review => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item fade-in';
+                
+                const reviewDate = new Date(review.date);
+                const formattedDate = reviewDate.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                // Get first few answers for preview
+                const previewText = Object.entries(review.answers)
+                    .slice(0, 2)
+                    .map(([key, value]) => {
+                        if (typeof value === 'string' && value.trim()) {
+                            const truncated = value.length > 100 ? value.substring(0, 100) + '...' : value;
+                            return `<strong>${key.replace(/_/g, ' ')}:</strong> ${truncated}`;
+                        }
+                        return '';
+                    })
+                    .filter(text => text)
+                    .join('<br>');
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div class="timeline-date">${formattedDate}</div>
+                            <div class="timeline-type">${review.type}</div>
+                        </div>
+                        <div class="timeline-preview">
+                            ${previewText || 'No answers recorded'}
+                        </div>
+                        <div class="timeline-actions">
+                            <button class="btn-small" onclick="viewReviewDetail(${review.id})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <button class="btn-small btn-outline" onclick="deleteReview(${review.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+            });
+        }
+        
+        function viewReviewDetail(reviewId) {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            const review = reviews.find(r => r.id === reviewId);
+            
+            if (!review) {
+                alert('Review not found');
+                return;
+            }
+            
+            // Create modal for detailed view
+            const modal = createModal('Review Details');
+            
+            let content = `
+                <div class="review-detail">
+                    <div class="detail-header">
+                        <h3>${review.title}</h3>
+                        <p>${new Date(review.date).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</p>
+                    </div>
+            `;
+            
+            if (review.answers) {
+                content += `<div class="detail-answers">`;
+                Object.entries(review.answers).forEach(([key, value]) => {
+                    if (value && value.toString().trim()) {
+                        content += `
+                            <div class="answer-item">
+                                <h4>${key.replace(/_/g, ' ')}</h4>
+                                <div class="answer-value">${value}</div>
+                            </div>
+                        `;
+                    }
+                });
+                content += `</div>`;
+            }
+            
+            if (review.actionItems && review.actionItems.length > 0) {
+                content += `
+                    <div class="detail-actions">
+                        <h4><i class="fas fa-tasks"></i> Action Items</h4>
+                        <ul>
+                `;
+                
+                review.actionItems.forEach(item => {
+                    content += `
+                        <li class="${item.completed ? 'completed' : ''}">
+                            <i class="fas fa-${item.completed ? 'check-circle' : 'circle'}"></i>
+                            ${item.text}
+                        </li>
+                    `;
+                });
+                
+                content += `</ul></div>`;
+            }
+            
+            content += `</div>`;
+            
+            modal.querySelector('.modal-content').innerHTML = content;
+            document.body.appendChild(modal);
+        }
+        
+        function deleteReview(reviewId) {
+            if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+                const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+                const updatedReviews = reviews.filter(r => r.id !== reviewId);
+                localStorage.setItem('reviews', JSON.stringify(updatedReviews));
+                
+                loadReviewDashboard();
+                loadReviewHistory();
+                loadInsights();
+                
+                showNotification('Review deleted successfully!', 'success');
+            }
+        }
+        
+        function loadInsights() {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            const insightsGrid = document.getElementById('insights-grid');
+            
+            if (reviews.length === 0) {
+                insightsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>No Insights Yet</h3>
+                        <p>Complete a few reviews to start seeing patterns and insights.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate insights
+            const reviewTypes = {};
+            const monthlyTrend = {};
+            const sentimentTrend = {};
+            
+            reviews.forEach(review => {
+                // Count by type
+                reviewTypes[review.type] = (reviewTypes[review.type] || 0) + 1;
+                
+                // Monthly trend
+                const month = new Date(review.date).toLocaleDateString('en-US', { month: 'short' });
+                monthlyTrend[month] = (monthlyTrend[month] || 0) + 1;
+                
+                // Sentiment trend
+                if (review.sentiment) {
+                    const monthYear = new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    if (!sentimentTrend[monthYear]) {
+                        sentimentTrend[monthYear] = { sum: 0, count: 0 };
+                    }
+                    sentimentTrend[monthYear].sum += parseFloat(review.sentiment);
+                    sentimentTrend[monthYear].count++;
+                }
+            });
+            
+            // Generate insight cards
+            insightsGrid.innerHTML = '';
+            
+            // Insight 1: Review Frequency
+            const totalReviews = reviews.length;
+            const avgPerMonth = totalReviews / Object.keys(monthlyTrend).length || 0;
+            
+            insightsGrid.innerHTML += `
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Review Frequency</h3>
+                    </div>
+                    <p>You've completed <strong>${totalReviews}</strong> reviews total.</p>
+                    <p>Average: <strong>${avgPerMonth.toFixed(1)}</strong> reviews per month</p>
+                    <div class="insight-chart">
+                        ${Object.entries(monthlyTrend).slice(-6).map(([month, count]) => `
+                            <div class="chart-bar" style="height: ${(count / Math.max(...Object.values(monthlyTrend))) * 100}%">
+                                <div class="chart-value">${count}</div>
+                                <div class="chart-label">${month}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Insight 2: Review Types
+            const maxTypeCount = Math.max(...Object.values(reviewTypes));
+            
+            insightsGrid.innerHTML += `
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Review Types</h3>
+                    </div>
+                    <p>Distribution of your review types:</p>
+                    <div class="insight-chart">
+                        ${Object.entries(reviewTypes).map(([type, count]) => `
+                            <div class="chart-bar" style="height: ${(count / maxTypeCount) * 100}%">
+                                <div class="chart-value">${count}</div>
+                                <div class="chart-label">${type}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Insight 3: Action Items Completion
+            const allActionItems = reviews.reduce((items, review) => items.concat(review.actionItems || []), []);
+            const completedItems = allActionItems.filter(item => item.completed).length;
+            const completionRate = allActionItems.length > 0 ? Math.round((completedItems / allActionItems.length) * 100) : 0;
+            
+            insightsGrid.innerHTML += `
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Action Items</h3>
+                    </div>
+                    <p>You've created <strong>${allActionItems.length}</strong> action items.</p>
+                    <p>Completion rate: <strong>${completionRate}%</strong></p>
+                    <div style="margin-top: 1rem;">
+                        <div style="background: var(--gray-light); height: 10px; border-radius: 5px; overflow: hidden;">
+                            <div style="background: var(--success); width: ${completionRate}%; height: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Insight 4: Sentiment Trend
+            const lastMonths = Object.entries(sentimentTrend).slice(-3);
+            if (lastMonths.length > 0) {
+                const lastAvg = lastMonths[lastMonths.length - 1][1].sum / lastMonths[lastMonths.length - 1][1].count;
+                const firstAvg = lastMonths[0][1].sum / lastMonths[0][1].count;
+                const trend = lastAvg > firstAvg ? 'improving' : lastAvg < firstAvg ? 'declining' : 'stable';
+                const trendIcon = trend === 'improving' ? 'arrow-up' : trend === 'declining' ? 'arrow-down' : 'minus';
+                
+                insightsGrid.innerHTML += `
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Sentiment Trend</h3>
+                        </div>
+                        <p>Your overall sentiment is <strong>${trend}</strong>.</p>
+                        <p>Current average: <strong>${lastAvg.toFixed(1)}</strong>/5</p>
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <i class="fas fa-${trendIcon}" style="font-size: 2rem; color: ${trend === 'improving' ? 'var(--success)' : trend === 'declining' ? 'var(--danger)' : 'var(--gray)'}"></i>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function createModal(title) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                padding: 1rem;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            modalContent.style.cssText = `
+                background-color: white;
+                border-radius: var(--border-radius);
+                padding: 2rem;
+                max-width: 800px;
+                max-height: 90vh;
+                overflow-y: auto;
+                width: 100%;
+                position: relative;
+            `;
+            
+            modalContent.innerHTML = `
+                <button class="modal-close" onclick="this.closest('.modal').remove()" style="
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: var(--gray);
+                ">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">${title}</h2>
+                <div id="modal-body"></div>
+            `;
+            
+            modal.appendChild(modalContent);
+            return modal;
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow-lg);
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Add CSS for animations
+            if (!document.getElementById('notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        function saveToLocalStorage() {
+            if (!currentReviewType) return;
+            
+            const unsavedReview = {
+                type: currentReviewType,
+                answers: reviewAnswers,
+                actionItems: actionItems,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('unsavedReview', JSON.stringify(unsavedReview));
+        }
+        
+        function loadUnsavedReview() {
+            const unsavedReview = localStorage.getItem('unsavedReview');
+            if (unsavedReview) {
+                const review = JSON.parse(unsavedReview);
+                if (confirm('You have an unsaved review. Would you like to continue where you left off?')) {
+                    startReview(review.type);
+                    reviewAnswers = review.answers || {};
+                    actionItems = review.actionItems || [];
+                    
+                    // Render the review with saved answers
+                    const template = reviewTemplates[review.type];
+                    if (template) {
+                        generateQuestions(template);
+                        renderActionItems();
+                        updateProgress();
+                        
+                        // Scroll to active section
+                        document.getElementById('active-review-section').scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        }
+        
+        function autoSaveReview() {
+            if (currentReviewType && Object.keys(reviewAnswers).length > 0) {
+                saveToLocalStorage();
+            }
+        }
+        
+        // Export functions for global use
+        window.startReview = startReview;
+        window.updateAnswer = updateAnswer;
+        window.selectRating = selectRating;
+        window.selectSentiment = selectSentiment;
+        window.addActionItem = addActionItem;
+        window.toggleActionItem = toggleActionItem;
+        window.removeActionItem = removeActionItem;
+        window.nextQuestion = nextQuestion;
+        window.previousQuestion = previousQuestion;
+        window.saveReview = saveReview;
+        window.viewReviewDetail = viewReviewDetail;
+        window.deleteReview = deleteReview;
+    </script>
+</body>
+</html>

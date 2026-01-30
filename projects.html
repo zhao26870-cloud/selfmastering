@@ -1,0 +1,2886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management | SelfMaster</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Enhanced Project Management Styles */
+        .projects-page {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            min-height: 100vh;
+        }
+        
+        /* Project Dashboard */
+        .projects-dashboard {
+            padding: 2rem 0;
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .card-trend {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            line-height: 1;
+            margin: 0.5rem 0;
+        }
+        
+        .card-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .card-progress {
+            margin-top: 1rem;
+        }
+        
+        /* Project Views */
+        .project-views {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .view-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--gray-light);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .view-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .view-tab:hover {
+            border-color: var(--primary-light);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .view-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        
+        .project-card.priority-high {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .project-card.priority-medium {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .project-card.priority-low {
+            border-left: 4px solid var(--success);
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .project-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-planning {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--gray);
+        }
+        
+        .status-active {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+        
+        .status-on-hold {
+            background: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-completed {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .project-progress {
+            margin: 1rem 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .project-team {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .team-avatars {
+            display: flex;
+        }
+        
+        .team-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-left: -8px;
+            border: 2px solid white;
+        }
+        
+        .team-avatar:first-child {
+            margin-left: 0;
+        }
+        
+        .team-more {
+            margin-left: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        /* Gantt Chart View */
+        .gantt-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        
+        .gantt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .gantt-timeline {
+            min-width: 800px;
+        }
+        
+        .timeline-header {
+            display: grid;
+            grid-template-columns: 200px repeat(12, 1fr);
+            border-bottom: 2px solid var(--gray-light);
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-month {
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark);
+            border-right: 1px solid var(--gray-light);
+        }
+        
+        .timeline-month:last-child {
+            border-right: none;
+        }
+        
+        .gantt-task {
+            display: grid;
+            grid-template-columns: 200px repeat(12, 1fr);
+            height: 60px;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        
+        .task-name {
+            padding: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .task-bar {
+            grid-column: span 12;
+            height: 30px;
+            border-radius: 15px;
+            position: relative;
+            margin: 0 0.5rem;
+        }
+        
+        /* Kanban Board */
+        .kanban-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        
+        .kanban-board {
+            display: flex;
+            gap: 1.5rem;
+            min-width: 1200px;
+            padding: 1rem 0;
+        }
+        
+        .kanban-column {
+            flex: 1;
+            min-width: 280px;
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+        
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .column-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .column-count {
+            background: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .kanban-task {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            cursor: move;
+            transition: var(--transition);
+        }
+        
+        .kanban-task:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .task-priority {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .priority-high {
+            background: var(--danger);
+        }
+        
+        .priority-medium {
+            background: var(--warning);
+        }
+        
+        .priority-low {
+            background: var(--success);
+        }
+        
+        /* Resource Management */
+        .resources-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .resource-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+        }
+        
+        .resource-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .resource-load {
+            margin-top: 1rem;
+        }
+        
+        .load-bar {
+            height: 8px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .load-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .load-low {
+            background: var(--success);
+            width: 30%;
+        }
+        
+        .load-medium {
+            background: var(--warning);
+            width: 60%;
+        }
+        
+        .load-high {
+            background: var(--danger);
+            width: 90%;
+        }
+        
+        /* Project Form Modal */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        /* Templates Grid */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        .template-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .template-details {
+            margin-top: 1rem;
+        }
+        
+        .template-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Project Details */
+        .project-details {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem 0;
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .details-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .details-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 992px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .milestones-list {
+            list-style: none;
+        }
+        
+        .milestone-item {
+            padding: 1rem;
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .milestone-item.completed {
+            background: rgba(76, 201, 240, 0.1);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .empty-state p {
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--gray-light);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .view-tab {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .details-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-chart {
+            height: 100px;
+            margin-top: 1rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: var(--primary-light);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .chart-bar:hover {
+            background: var(--primary);
+        }
+        
+        /* Project Timeline */
+        .timeline-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-light);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -9px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .timeline-content {
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+        
+        /* Risk Matrix */
+        .risk-matrix {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .matrix-cell {
+            height: 60px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .matrix-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        .risk-low {
+            background: rgba(76, 201, 240, 0.2);
+            border: 2px solid rgba(76, 201, 240, 0.5);
+        }
+        
+        .risk-medium {
+            background: rgba(248, 150, 30, 0.2);
+            border: 2px solid rgba(248, 150, 30, 0.5);
+        }
+        
+        .risk-high {
+            background: rgba(249, 65, 68, 0.2);
+            border: 2px solid rgba(249, 65, 68, 0.5);
+        }
+    </style>
+</head>
+<body class="projects-page">
+    <!-- Header -->
+   <header>
+    <div class="container header-content">
+        <div class="logo">
+            <i class="fas fa-brain"></i>
+            <span><a href="index.html" style="color: inherit; text-decoration: none;">SelfMaster</a></span>
+        </div>
+        <nav id="main-nav">
+            <ul>
+                <li><a href="tasks.html"><i class="fas fa-tasks"></i> Tasks</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="calendar.html"><i class="fas fa-calendar"></i> Calendar</a></li>
+                <li><a href="goals.html"><i class="fas fa-bullseye"></i> Goals</a></li>
+                <li><a href="habits.html"><i class="fas fa-running"></i> Habits</a></li>
+                <li><a href="notes.html"><i class="fas fa-sticky-note"></i> Notes</a></li>
+                <li><a href="reviews.html"><i class="fas fa-chart-bar"></i> Reviews</a></li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-project-diagram"></i> Project Management</h1>
+            <p>Plan, track, and execute projects with advanced management tools</p>
+        </div>
+    </section>
+
+    <!-- Projects Dashboard -->
+    <section class="projects-dashboard">
+        <div class="container">
+            <h2 class="section-title">Project Dashboard</h2>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions" style="display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap;">
+                <button class="action-btn" onclick="showProjectForm()">
+                    <i class="fas fa-plus"></i> New Project
+                </button>
+                <button class="action-btn outline" onclick="showTemplates()">
+                    <i class="fas fa-layer-group"></i> Templates
+                </button>
+                <button class="action-btn outline" onclick="showGanttView()">
+                    <i class="fas fa-chart-gantt"></i> Gantt Chart
+                </button>
+                <button class="action-btn outline" onclick="showKanbanView()">
+                    <i class="fas fa-columns"></i> Kanban Board
+                </button>
+                <button class="action-btn outline" onclick="showResourcesView()">
+                    <i class="fas fa-users"></i> Resources
+                </button>
+            </div>
+            
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary);">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="card-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 12%
+                        </div>
+                    </div>
+                    <div class="card-value" id="total-projects">0</div>
+                    <div class="card-label">Active Projects</div>
+                    <div class="card-progress">
+                        <div class="progress-bar">
+                            <div class="progress" id="active-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--success);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 8%
+                        </div>
+                    </div>
+                    <div class="card-value" id="completed-projects">0</div>
+                    <div class="card-label">Completed</div>
+                    <div class="card-progress">
+                        <div class="progress-bar">
+                            <div class="progress" id="completion-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: rgba(248, 150, 30, 0.1); color: var(--warning);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-trend trend-down">
+                            <i class="fas fa-arrow-down"></i> 5%
+                        </div>
+                    </div>
+                    <div class="card-value" id="behind-projects">0</div>
+                    <div class="card-label">Behind Schedule</div>
+                    <div class="card-progress">
+                        <div class="progress-bar">
+                            <div class="progress" id="behind-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: rgba(247, 37, 133, 0.1); color: var(--accent);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 15%
+                        </div>
+                    </div>
+                    <div class="card-value" id="team-members">0</div>
+                    <div class="card-label">Team Members</div>
+                    <div class="card-progress">
+                        <div class="progress-bar">
+                            <div class="progress" id="team-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="stats-grid" id="project-stats" style="display: none;">
+                <!-- Statistics will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Views -->
+    <section class="project-views">
+        <div class="container">
+            <div class="view-tabs">
+                <button class="view-tab active" onclick="showView('list')">
+                    <i class="fas fa-list"></i> List View
+                </button>
+                <button class="view-tab" onclick="showView('grid')">
+                    <i class="fas fa-th-large"></i> Grid View
+                </button>
+                <button class="view-tab" onclick="showView('gantt')">
+                    <i class="fas fa-chart-gantt"></i> Gantt Chart
+                </button>
+                <button class="view-tab" onclick="showView('kanban')">
+                    <i class="fas fa-columns"></i> Kanban Board
+                </button>
+                <button class="view-tab" onclick="showView('timeline')">
+                    <i class="fas fa-stream"></i> Timeline
+                </button>
+            </div>
+            
+            <!-- List View (Default) -->
+            <div class="projects-container" id="list-view">
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Projects will be loaded dynamically -->
+                </div>
+                
+                <div class="empty-state" id="empty-projects" style="display: none;">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>No Projects Found</h3>
+                    <p>Create your first project or select a template to get started!</p>
+                    <button class="btn" onclick="showProjectForm()">
+                        <i class="fas fa-plus"></i> Create Your First Project
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Gantt Chart View -->
+            <div class="gantt-container" id="gantt-view" style="display: none;">
+                <div class="gantt-header">
+                    <h3><i class="fas fa-chart-gantt"></i> Project Gantt Chart</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <select class="filter-select" id="gantt-filter" onchange="loadGanttChart()">
+                            <option value="all">All Projects</option>
+                            <option value="active">Active Only</option>
+                            <option value="priority">High Priority</option>
+                        </select>
+                        <button class="action-btn outline" onclick="exportGanttChart()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="gantt-timeline" id="gantt-timeline">
+                    <!-- Gantt chart will be loaded dynamically -->
+                </div>
+            </div>
+            
+            <!-- Kanban Board View -->
+            <div class="kanban-container" id="kanban-view" style="display: none;">
+                <div class="kanban-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3><i class="fas fa-columns"></i> Project Kanban Board</h3>
+                    <button class="action-btn" onclick="addKanbanTask()">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </div>
+                <div class="kanban-board" id="kanban-board">
+                    <!-- Kanban board will be loaded dynamically -->
+                </div>
+            </div>
+            
+            <!-- Timeline View -->
+            <div class="timeline-container" id="timeline-view" style="display: none;">
+                <h3><i class="fas fa-stream"></i> Project Timeline</h3>
+                <div class="timeline" id="project-timeline">
+                    <!-- Timeline will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Management -->
+    <section class="resources-container" id="resources-view" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Resource Management</h2>
+            <div class="resources-grid" id="resources-grid">
+                <!-- Resources will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Matrix -->
+    <section class="risk-matrix" id="risk-view" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Risk Assessment Matrix</h2>
+            <div class="matrix-grid" id="risk-matrix">
+                <!-- Risk matrix will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Templates -->
+    <section class="templates-section" id="templates-view" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Project Templates</h2>
+            <div class="templates-grid" id="templates-container">
+                <!-- Templates will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="project-details" id="project-details" style="display: none;">
+        <div class="container">
+            <div class="details-header">
+                <div>
+                    <h1 class="details-title" id="detail-title">Project Title</h1>
+                    <div class="details-meta">
+                        <div><i class="fas fa-calendar"></i> <span id="detail-dates">Start - End</span></div>
+                        <div><i class="fas fa-user"></i> <span id="detail-owner">Project Owner</span></div>
+                        <div><i class="fas fa-tag"></i> <span id="detail-status">Status</span></div>
+                        <div><i class="fas fa-chart-line"></i> <span id="detail-progress">Progress</span></div>
+                    </div>
+                </div>
+                <div>
+                    <button class="action-btn" onclick="editProjectDetail()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                </div>
+            </div>
+            
+            <div class="details-grid">
+                <div>
+                    <h3><i class="fas fa-info-circle"></i> Project Overview</h3>
+                    <p id="detail-description">Project description will appear here.</p>
+                    
+                    <h3 style="margin-top: 2rem;"><i class="fas fa-tasks"></i> Milestones</h3>
+                    <ul class="milestones-list" id="detail-milestones">
+                        <!-- Milestones will be loaded dynamically -->
+                    </ul>
+                    
+                    <h3 style="margin-top: 2rem;"><i class="fas fa-file-alt"></i> Recent Updates</h3>
+                    <div id="detail-updates">
+                        <!-- Updates will be loaded dynamically -->
+                    </div>
+                </div>
+                
+                <div>
+                    <h3><i class="fas fa-chart-pie"></i> Statistics</h3>
+                    <div class="stats-grid" id="detail-stats">
+                        <!-- Detail stats will be loaded dynamically -->
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem;"><i class="fas fa-users"></i> Team</h3>
+                    <div id="detail-team">
+                        <!-- Team members will be loaded dynamically -->
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem;"><i class="fas fa-paperclip"></i> Attachments</h3>
+                    <div id="detail-attachments">
+                        <!-- Attachments will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Form Modal -->
+    <div class="project-modal" id="project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Create New Project</h2>
+                <button class="action-icon" onclick="closeModal('project-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="project-form">
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                    <div class="form-group">
+                        <label for="project-name">Project Name *</label>
+                        <input type="text" id="project-name" required placeholder="Enter project name">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" rows="3" placeholder="Describe the project objectives and scope"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project-category">Category</label>
+                            <select id="project-category">
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="learning">Learning</option>
+                                <option value="business">Business</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-priority">Priority</label>
+                            <select id="project-priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-calendar"></i> Timeline</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project-start">Start Date</label>
+                            <input type="date" id="project-start">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-deadline">Deadline</label>
+                            <input type="date" id="project-deadline">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-duration">Estimated Duration (weeks)</label>
+                        <input type="number" id="project-duration" min="1" max="52" value="4">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-users"></i> Team & Resources</h3>
+                    <div class="form-group">
+                        <label for="project-owner">Project Owner</label>
+                        <input type="text" id="project-owner" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-team">Team Members (comma separated)</label>
+                        <input type="text" id="project-team" placeholder="e.g., John, Sarah, Mike">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-budget">Budget ($)</label>
+                        <input type="number" id="project-budget" min="0" placeholder="Estimated budget">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-tasks"></i> Initial Setup</h3>
+                    <div class="form-group">
+                        <label for="project-milestones">Milestones (one per line)</label>
+                        <textarea id="project-milestones" rows="4" placeholder="e.g., Planning Complete&#10;Design Approved&#10;Development Complete&#10;Testing Complete&#10;Project Launch"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-tags">Tags (comma separated)</label>
+                        <input type="text" id="project-tags" placeholder="e.g., website, marketing, q4">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="action-btn outline" onclick="closeModal('project-modal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="action-btn">
+                        <i class="fas fa-save"></i> Save Project
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Templates Modal -->
+    <div class="project-modal" id="templates-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-layer-group"></i> Project Templates</h2>
+                <button class="action-icon" onclick="closeModal('templates-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="templates-container">
+                <div class="templates-grid" id="template-grid">
+                    <!-- Templates will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>SelfMaster</h4>
+                    <p>Your comprehensive personal management system designed to help you take control of your life, build better habits, and achieve your goals.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Project Tools</h4>
+                    <ul>
+                        <li><a href="#">Gantt Charts</a></li>
+                        <li><a href="#">Kanban Boards</a></li>
+                        <li><a href="#">Resource Planning</a></li>
+                        <li><a href="#">Risk Management</a></li>
+                        <li><a href="#">Budget Tracking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Methodologies</h4>
+                    <ul>
+                        <li><a href="#">Agile/Scrum</a></li>
+                        <li><a href="#">Kanban</a></li>
+                        <li><a href="#">Waterfall</a></li>
+                        <li><a href="#">Lean</a></li>
+                        <li><a href="#">PRINCE2</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SelfMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Enhanced Project Management JavaScript
+        let currentView = 'list';
+        let currentProjectId = null;
+        let projects = [];
+        let projectTemplates = [];
+        
+        // Default templates
+        const defaultTemplates = [
+            {
+                id: 'product-launch',
+                name: 'Product Launch',
+                icon: 'rocket',
+                description: 'Complete framework for launching a new product or service',
+                category: 'business',
+                duration: '2-3 months',
+                teamSize: '5-10 people',
+                budget: '$10,000 - $50,000',
+                content: {
+                    milestones: [
+                        'Market research complete',
+                        'Product requirements defined',
+                        'Marketing strategy created',
+                        'Production setup complete',
+                        'Launch campaign ready',
+                        'Sales team trained',
+                        'Product launched',
+                        'Post-launch review'
+                    ],
+                    team: ['Product Manager', 'Marketing Lead', 'Sales Lead', 'Development Team'],
+                    tags: 'product, launch, marketing, business'
+                }
+            },
+            {
+                id: 'website-redesign',
+                name: 'Website Redesign',
+                icon: 'desktop',
+                description: 'Redesign and development of a modern website',
+                category: 'work',
+                duration: '3-4 months',
+                teamSize: '3-6 people',
+                budget: '$5,000 - $20,000',
+                content: {
+                    milestones: [
+                        'Research and analysis',
+                        'Wireframes complete',
+                        'UI design approved',
+                        'Development phase 1',
+                        'Development phase 2',
+                        'Testing complete',
+                        'Content migration',
+                        'Website launch'
+                    ],
+                    team: ['Project Manager', 'UI/UX Designer', 'Frontend Developer', 'Backend Developer'],
+                    tags: 'website, design, development, digital'
+                }
+            },
+            {
+                id: 'event-planning',
+                name: 'Event Planning',
+                icon: 'calendar-check',
+                description: 'Plan and execute successful events from start to finish',
+                category: 'business',
+                duration: '1-6 months',
+                teamSize: '3-8 people',
+                budget: '$2,000 - $50,000',
+                content: {
+                    milestones: [
+                        'Objectives defined',
+                        'Venue booked',
+                        'Budget approved',
+                        'Vendors confirmed',
+                        'Marketing started',
+                        'Registrations open',
+                        'Event day',
+                        'Post-event review'
+                    ],
+                    team: ['Event Manager', 'Marketing Coordinator', 'Logistics Manager', 'Volunteers'],
+                    tags: 'event, planning, logistics, marketing'
+                }
+            },
+            {
+                id: 'mobile-app',
+                name: 'Mobile App Development',
+                icon: 'mobile-alt',
+                description: 'Build and launch a cross-platform mobile application',
+                category: 'work',
+                duration: '4-6 months',
+                teamSize: '4-8 people',
+                budget: '$15,000 - $75,000',
+                content: {
+                    milestones: [
+                        'Requirements gathered',
+                        'Design approved',
+                        'MVP development',
+                        'Testing phase 1',
+                        'Testing phase 2',
+                        'App store submission',
+                        'Beta launch',
+                        'Full launch'
+                    ],
+                    team: ['Product Owner', 'UI/UX Designer', 'Mobile Developers', 'QA Tester'],
+                    tags: 'mobile, app, development, technology'
+                }
+            },
+            {
+                id: 'research-project',
+                name: 'Research Project',
+                icon: 'microscope',
+                description: 'Academic or market research project with structured methodology',
+                category: 'learning',
+                duration: '3-12 months',
+                teamSize: '1-5 people',
+                budget: '$0 - $10,000',
+                content: {
+                    milestones: [
+                        'Research proposal',
+                        'Literature review',
+                        'Methodology defined',
+                        'Data collection',
+                        'Data analysis',
+                        'Findings compiled',
+                        'Report writing',
+                        'Presentation'
+                    ],
+                    team: ['Lead Researcher', 'Research Assistants', 'Academic Advisor'],
+                    tags: 'research, academic, analysis, learning'
+                }
+            },
+            {
+                id: 'personal-goal',
+                name: 'Personal Goal Project',
+                icon: 'bullseye',
+                description: 'Structured framework for achieving personal development goals',
+                category: 'personal',
+                duration: '1-3 months',
+                teamSize: 'Individual',
+                budget: '$0 - $1,000',
+                content: {
+                    milestones: [
+                        'Goal definition',
+                        'Plan creation',
+                        'Resource gathering',
+                        'Action phase 1',
+                        'Action phase 2',
+                        'Mid-point review',
+                        'Final push',
+                        'Goal achievement'
+                    ],
+                    team: ['Yourself'],
+                    tags: 'personal, growth, development, goals'
+                }
+            }
+        ];
+        
+        // Sample team members for resource management
+        const teamMembers = [
+            { id: 1, name: 'John Smith', role: 'Project Manager', avatar: 'JS', load: 75, skills: ['Leadership', 'Planning', 'Communication'] },
+            { id: 2, name: 'Sarah Johnson', role: 'UI/UX Designer', avatar: 'SJ', load: 60, skills: ['Figma', 'Adobe XD', 'User Research'] },
+            { id: 3, name: 'Mike Chen', role: 'Frontend Developer', avatar: 'MC', load: 85, skills: ['React', 'Vue.js', 'TypeScript'] },
+            { id: 4, name: 'Lisa Wang', role: 'Backend Developer', avatar: 'LW', load: 70, skills: ['Node.js', 'Python', 'Database Design'] },
+            { id: 5, name: 'David Brown', role: 'QA Engineer', avatar: 'DB', load: 50, skills: ['Testing', 'Automation', 'Debugging'] },
+            { id: 6, name: 'Emma Davis', role: 'Marketing Specialist', avatar: 'ED', load: 65, skills: ['SEO', 'Content', 'Analytics'] }
+        ];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProjects();
+            loadProjectStats();
+            loadTemplates();
+            
+            // Set up form submission
+            document.getElementById('project-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProject();
+            });
+            
+            // Initialize drag and drop for Kanban
+            initializeKanbanDragDrop();
+            
+            // Set up auto-refresh for project stats
+            setInterval(loadProjectStats, 30000); // Refresh every 30 seconds
+            
+            // Load sample data if none exists
+            if (projects.length === 0) {
+                loadSampleProjects();
+            }
+        });
+        
+        function loadProjects() {
+            projects = JSON.parse(localStorage.getItem('projects') || '[]');
+            renderProjects(currentView);
+            updateEmptyState();
+        }
+        
+        function loadProjectStats() {
+            const activeProjects = projects.filter(p => p.status === 'active').length;
+            const completedProjects = projects.filter(p => p.status === 'completed').length;
+            const behindProjects = projects.filter(p => {
+                if (p.status === 'active' && p.deadline) {
+                    const deadline = new Date(p.deadline);
+                    const today = new Date();
+                    return deadline < today;
+                }
+                return false;
+            }).length;
+            
+            const allTeamMembers = new Set();
+            projects.forEach(project => {
+                if (project.team) {
+                    project.team.split(',').forEach(member => {
+                        if (member.trim()) allTeamMembers.add(member.trim());
+                    });
+                }
+            });
+            
+            // Update dashboard cards
+            document.getElementById('total-projects').textContent = activeProjects;
+            document.getElementById('completed-projects').textContent = completedProjects;
+            document.getElementById('behind-projects').textContent = behindProjects;
+            document.getElementById('team-members').textContent = allTeamMembers.size;
+            
+            // Update progress bars
+            const totalProjects = projects.length;
+            const activeProgress = totalProjects > 0 ? (activeProjects / totalProjects) * 100 : 0;
+            const completionProgress = totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0;
+            const behindProgress = activeProjects > 0 ? (behindProjects / activeProjects) * 100 : 0;
+            const teamProgress = Math.min(allTeamMembers.size * 10, 100);
+            
+            document.getElementById('active-progress').style.width = `${activeProgress}%`;
+            document.getElementById('completion-progress').style.width = `${completionProgress}%`;
+            document.getElementById('behind-progress').style.width = `${behindProgress}%`;
+            document.getElementById('team-progress').style.width = `${teamProgress}%`;
+            
+            // Load statistics
+            loadStatistics();
+        }
+        
+        function loadStatistics() {
+            const statsGrid = document.getElementById('project-stats');
+            
+            // Calculate statistics
+            const categories = {};
+            const priorities = { high: 0, medium: 0, low: 0 };
+            const monthlyData = {};
+            
+            projects.forEach(project => {
+                // Category distribution
+                categories[project.category] = (categories[project.category] || 0) + 1;
+                
+                // Priority distribution
+                if (project.priority) {
+                    priorities[project.priority] = (priorities[project.priority] || 0) + 1;
+                }
+                
+                // Monthly trend (last 6 months)
+                if (project.createdAt) {
+                    const date = new Date(project.createdAt);
+                    const monthYear = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                    monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
+                }
+            });
+            
+            // Get last 6 months
+            const last6Months = [];
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                last6Months.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
+            }
+            
+            statsGrid.style.display = 'grid';
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <h4><i class="fas fa-chart-pie"></i> Category Distribution</h4>
+                    <div class="stat-chart">
+                        ${Object.entries(categories).map(([category, count]) => `
+                            <div class="chart-bar" style="height: ${(count / Math.max(1, ...Object.values(categories))) * 100}%" title="${category}: ${count} projects">
+                                <div class="chart-label" style="position: absolute; bottom: -20px; left: 0; right: 0; text-align: center; font-size: 0.7rem;">${category.charAt(0)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h4><i class="fas fa-exclamation-circle"></i> Priority Breakdown</h4>
+                    <div style="margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>High: ${priorities.high}</span>
+                            <span>Medium: ${priorities.medium}</span>
+                            <span>Low: ${priorities.low}</span>
+                        </div>
+                        <div style="background: var(--gray-light); height: 10px; border-radius: 5px; overflow: hidden;">
+                            <div style="width: ${(priorities.high / Math.max(1, priorities.high + priorities.medium + priorities.low)) * 100}%; height: 100%; background: var(--danger); float: left;"></div>
+                            <div style="width: ${(priorities.medium / Math.max(1, priorities.high + priorities.medium + priorities.low)) * 100}%; height: 100%; background: var(--warning); float: left;"></div>
+                            <div style="width: ${(priorities.low / Math.max(1, priorities.high + priorities.medium + priorities.low)) * 100}%; height: 100%; background: var(--success); float: left;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h4><i class="fas fa-chart-line"></i> Monthly Trend</h4>
+                    <div class="stat-chart">
+                        ${last6Months.map(month => `
+                            <div class="chart-bar" style="height: ${((monthlyData[month] || 0) / Math.max(1, ...Object.values(monthlyData))) * 100}%" title="${month}: ${monthlyData[month] || 0} projects">
+                                <div class="chart-value" style="position: absolute; top: -20px; left: 0; right: 0; text-align: center; font-size: 0.8rem; font-weight: bold;">${monthlyData[month] || 0}</div>
+                                <div class="chart-label" style="position: absolute; bottom: -20px; left: 0; right: 0; text-align: center; font-size: 0.7rem;">${month}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderProjects(view) {
+            const projectsGrid = document.getElementById('projects-grid');
+            const emptyState = document.getElementById('empty-projects');
+            
+            if (projects.length === 0) {
+                projectsGrid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            projectsGrid.innerHTML = '';
+            
+            // Sort projects by priority and deadline
+            const sortedProjects = [...projects].sort((a, b) => {
+                // First sort by status (active first)
+                if (a.status !== b.status) {
+                    if (a.status === 'active') return -1;
+                    if (b.status === 'active') return 1;
+                }
+                
+                // Then sort by priority (high first)
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                const aPriority = priorityOrder[a.priority] || 0;
+                const bPriority = priorityOrder[b.priority] || 0;
+                if (aPriority !== bPriority) return bPriority - aPriority;
+                
+                // Then sort by deadline (earliest first)
+                if (a.deadline && b.deadline) {
+                    return new Date(a.deadline) - new Date(b.deadline);
+                }
+                
+                return 0;
+            });
+            
+            if (view === 'list') {
+                renderListView(sortedProjects);
+            } else {
+                renderGridView(sortedProjects);
+            }
+        }
+        
+        function renderGridView(projects) {
+            const projectsGrid = document.getElementById('projects-grid');
+            
+            projects.forEach(project => {
+                const projectDate = new Date(project.createdAt || new Date());
+                const formattedDate = formatDate(projectDate);
+                const progress = calculateProjectProgress(project);
+                
+                // Get status class
+                let statusClass = '';
+                let statusText = '';
+                switch(project.status) {
+                    case 'planning':
+                        statusClass = 'status-planning';
+                        statusText = 'Planning';
+                        break;
+                    case 'active':
+                        statusClass = 'status-active';
+                        statusText = 'Active';
+                        break;
+                    case 'on-hold':
+                        statusClass = 'status-on-hold';
+                        statusText = 'On Hold';
+                        break;
+                    case 'completed':
+                        statusClass = 'status-completed';
+                        statusText = 'Completed';
+                        break;
+                    default:
+                        statusClass = 'status-planning';
+                        statusText = 'Planning';
+                }
+                
+                // Get team members for avatar display
+                let teamAvatars = '';
+                if (project.team) {
+                    const teamArray = project.team.split(',').slice(0, 3);
+                    teamArray.forEach((member, index) => {
+                        const initials = member.trim().split(' ').map(n => n[0]).join('').toUpperCase();
+                        teamAvatars += `<div class="team-avatar" style="background: ${getColorFromName(member)}">${initials}</div>`;
+                    });
+                    
+                    if (project.team.split(',').length > 3) {
+                        teamAvatars += `<div class="team-more">+${project.team.split(',').length - 3}</div>`;
+                    }
+                }
+                
+                const projectHTML = `
+                    <div class="project-card priority-${project.priority}" onclick="viewProjectDetail('${project.id}')">
+                        <div class="project-header">
+                            <div>
+                                <div class="project-title">${project.name}</div>
+                                <div class="project-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>${project.category}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="project-status ${statusClass}">${statusText}</div>
+                        </div>
+                        
+                        <p style="color: var(--gray); margin: 1rem 0; font-size: 0.95rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            ${project.description || 'No description provided'}
+                        </p>
+                        
+                        <div class="project-progress">
+                            <div class="progress-info">
+                                <span>Progress</span>
+                                <span>${progress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        
+                        ${teamAvatars ? `
+                            <div class="project-team">
+                                <div class="team-avatars">
+                                    ${teamAvatars}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light);">
+                            <div style="display: flex; gap: 0.75rem;">
+                                <div class="action-icon" onclick="event.stopPropagation(); editProject('${project.id}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="action-icon" onclick="event.stopPropagation(); deleteProject('${project.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                                <div class="action-icon" onclick="event.stopPropagation(); duplicateProject('${project.id}')" title="Duplicate">
+                                    <i class="fas fa-copy"></i>
+                                </div>
+                            </div>
+                            ${project.deadline ? `
+                                <div style="font-size: 0.85rem; color: ${isDeadlineApproaching(project.deadline) ? 'var(--danger)' : 'var(--gray)'};">
+                                    <i class="fas fa-clock"></i> ${formatDeadline(project.deadline)}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                projectsGrid.innerHTML += projectHTML;
+            });
+        }
+        
+        function renderListView(projects) {
+            const projectsGrid = document.getElementById('projects-grid');
+            projectsGrid.style.display = 'flex';
+            projectsGrid.style.flexDirection = 'column';
+            projectsGrid.style.gap = '0.75rem';
+            
+            projects.forEach(project => {
+                const progress = calculateProjectProgress(project);
+                const deadlineStatus = project.deadline ? formatDeadline(project.deadline) : 'No deadline';
+                
+                const projectHTML = `
+                    <div class="project-card list-view priority-${project.priority}" onclick="viewProjectDetail('${project.id}')" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                <div class="project-title" style="margin-bottom: 0;">${project.name}</div>
+                                <div class="project-status ${getStatusClass(project.status)}">${getStatusText(project.status)}</div>
+                                <div style="font-size: 0.85rem; color: var(--gray);">
+                                    <i class="fas fa-tag"></i> ${project.category}
+                                </div>
+                            </div>
+                            <p style="color: var(--gray); margin: 0.5rem 0; font-size: 0.9rem;">
+                                ${project.description ? project.description.substring(0, 100) + (project.description.length > 100 ? '...' : '') : 'No description'}
+                            </p>
+                            <div style="display: flex; gap: 2rem; margin-top: 0.5rem; font-size: 0.85rem; color: var(--gray);">
+                                <div><i class="fas fa-chart-line"></i> ${progress}% complete</div>
+                                <div><i class="fas fa-clock"></i> ${deadlineStatus}</div>
+                                <div><i class="fas fa-users"></i> ${project.team ? project.team.split(',').length : 0} members</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                            <div class="action-icon" onclick="event.stopPropagation(); editProject('${project.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="action-icon" onclick="event.stopPropagation(); deleteProject('${project.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                projectsGrid.innerHTML += projectHTML;
+            });
+        }
+        
+        function getStatusClass(status) {
+            switch(status) {
+                case 'planning': return 'status-planning';
+                case 'active': return 'status-active';
+                case 'on-hold': return 'status-on-hold';
+                case 'completed': return 'status-completed';
+                default: return 'status-planning';
+            }
+        }
+        
+        function getStatusText(status) {
+            switch(status) {
+                case 'planning': return 'Planning';
+                case 'active': return 'Active';
+                case 'on-hold': return 'On Hold';
+                case 'completed': return 'Completed';
+                default: return 'Planning';
+            }
+        }
+        
+        function calculateProjectProgress(project) {
+            if (project.status === 'completed') return 100;
+            if (project.status === 'planning') return 0;
+            
+            // Calculate progress based on milestones
+            if (project.milestones && project.milestones.length > 0) {
+                const completed = project.milestones.filter(m => m.completed).length;
+                return Math.round((completed / project.milestones.length) * 100);
+            }
+            
+            // Default progress based on time elapsed
+            if (project.startDate && project.deadline) {
+                const start = new Date(project.startDate);
+                const end = new Date(project.deadline);
+                const today = new Date();
+                
+                if (today <= start) return 0;
+                if (today >= end) return 100;
+                
+                const totalDuration = end - start;
+                const elapsed = today - start;
+                return Math.round((elapsed / totalDuration) * 100);
+            }
+            
+            return project.progress || 0;
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: now.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
+            });
+        }
+        
+        function formatDeadline(deadline) {
+            const today = new Date();
+            const deadlineDate = new Date(deadline);
+            const diffDays = Math.floor((deadlineDate - today) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
+            if (diffDays === 0) return 'Due today';
+            if (diffDays === 1) return 'Due tomorrow';
+            if (diffDays < 7) return `Due in ${diffDays} days`;
+            if (diffDays < 30) return `Due in ${Math.floor(diffDays / 7)} weeks`;
+            
+            return deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function isDeadlineApproaching(deadline) {
+            const today = new Date();
+            const deadlineDate = new Date(deadline);
+            const diffDays = Math.floor((deadlineDate - today) / (1000 * 60 * 60 * 24));
+            return diffDays <= 7 && diffDays >= 0;
+        }
+        
+        function getColorFromName(name) {
+            const colors = ['#4361ee', '#4895ef', '#4cc9f0', '#3f37c9', '#7209b7', '#f72585', '#f8961e', '#f94144'];
+            const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return colors[hash % colors.length];
+        }
+        
+        function updateEmptyState() {
+            const emptyState = document.getElementById('empty-projects');
+            if (projects.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+        
+        function showView(view) {
+            currentView = view;
+            
+            // Update active tab
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all views
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('gantt-view').style.display = 'none';
+            document.getElementById('kanban-view').style.display = 'none';
+            document.getElementById('timeline-view').style.display = 'none';
+            document.getElementById('resources-view').style.display = 'none';
+            document.getElementById('risk-view').style.display = 'none';
+            document.getElementById('templates-view').style.display = 'none';
+            document.getElementById('project-details').style.display = 'none';
+            
+            // Show selected view
+            if (view === 'list' || view === 'grid') {
+                document.getElementById('list-view').style.display = 'block';
+                renderProjects(view);
+            } else if (view === 'gantt') {
+                document.getElementById('gantt-view').style.display = 'block';
+                loadGanttChart();
+            } else if (view === 'kanban') {
+                document.getElementById('kanban-view').style.display = 'block';
+                loadKanbanBoard();
+            } else if (view === 'timeline') {
+                document.getElementById('timeline-view').style.display = 'block';
+                loadProjectTimeline();
+            }
+        }
+        
+        function showGanttView() {
+            showView('gantt');
+        }
+        
+        function showKanbanView() {
+            showView('kanban');
+        }
+        
+        function showResourcesView() {
+            document.getElementById('resources-view').style.display = 'block';
+            loadResources();
+        }
+        
+        function showProjectForm() {
+            document.getElementById('modal-title').textContent = 'Create New Project';
+            document.getElementById('project-form').reset();
+            currentProjectId = null;
+            
+            // Set default dates
+            const today = new Date();
+            const nextMonth = new Date(today);
+            nextMonth.setMonth(today.getMonth() + 1);
+            
+            document.getElementById('project-start').value = today.toISOString().split('T')[0];
+            document.getElementById('project-deadline').value = nextMonth.toISOString().split('T')[0];
+            
+            openModal('project-modal');
+        }
+        
+        function editProject(projectId) {
+            const project = projects.find(p => p.id == projectId);
+            if (!project) return;
+            
+            currentProjectId = projectId;
+            document.getElementById('modal-title').textContent = 'Edit Project';
+            
+            // Fill form with project data
+            document.getElementById('project-name').value = project.name || '';
+            document.getElementById('project-description').value = project.description || '';
+            document.getElementById('project-category').value = project.category || 'work';
+            document.getElementById('project-priority').value = project.priority || 'medium';
+            document.getElementById('project-start').value = project.startDate || '';
+            document.getElementById('project-deadline').value = project.deadline || '';
+            document.getElementById('project-duration').value = project.duration || 4;
+            document.getElementById('project-owner').value = project.owner || '';
+            document.getElementById('project-team').value = project.team || '';
+            document.getElementById('project-budget').value = project.budget || '';
+            document.getElementById('project-milestones').value = project.milestones ? project.milestones.map(m => m.text).join('\n') : '';
+            document.getElementById('project-tags').value = project.tags || '';
+            
+            openModal('project-modal');
+        }
+        
+        function saveProject() {
+            const name = document.getElementById('project-name').value.trim();
+            const description = document.getElementById('project-description').value;
+            const category = document.getElementById('project-category').value;
+            const priority = document.getElementById('project-priority').value;
+            const startDate = document.getElementById('project-start').value;
+            const deadline = document.getElementById('project-deadline').value;
+            const duration = document.getElementById('project-duration').value;
+            const owner = document.getElementById('project-owner').value;
+            const team = document.getElementById('project-team').value;
+            const budget = document.getElementById('project-budget').value;
+            const milestonesText = document.getElementById('project-milestones').value;
+            const tags = document.getElementById('project-tags').value;
+            
+            if (!name) {
+                alert('Please enter a project name');
+                return;
+            }
+            
+            // Parse milestones
+            const milestones = milestonesText.split('\n')
+                .filter(line => line.trim())
+                .map((text, index) => ({
+                    id: index + 1,
+                    text: text.trim(),
+                    completed: false
+                }));
+            
+            const project = {
+                id: currentProjectId || Date.now(),
+                name: name,
+                description: description,
+                category: category,
+                priority: priority,
+                startDate: startDate,
+                deadline: deadline,
+                duration: duration,
+                owner: owner,
+                team: team,
+                budget: budget,
+                milestones: milestones,
+                tags: tags,
+                status: 'planning',
+                progress: 0,
+                createdAt: currentProjectId ? projects.find(p => p.id == currentProjectId)?.createdAt || new Date().toISOString() : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (currentProjectId) {
+                // Update existing project
+                const index = projects.findIndex(p => p.id == currentProjectId);
+                if (index !== -1) {
+                    // Preserve some existing data
+                    project.status = projects[index].status;
+                    project.progress = projects[index].progress;
+                    projects[index] = project;
+                }
+            } else {
+                // Add new project
+                projects.push(project);
+            }
+            
+            localStorage.setItem('projects', JSON.stringify(projects));
+            
+            closeModal('project-modal');
+            showNotification(`Project "${name}" saved successfully!`, 'success');
+            
+            // Refresh views
+            loadProjects();
+            loadProjectStats();
+        }
+        
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+                projects = projects.filter(p => p.id != projectId);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                
+                loadProjects();
+                loadProjectStats();
+                showNotification('Project deleted successfully!', 'success');
+            }
+        }
+        
+        function duplicateProject(projectId) {
+            const original = projects.find(p => p.id == projectId);
+            if (!original) return;
+            
+            const duplicate = {
+                ...original,
+                id: Date.now(),
+                name: `${original.name} (Copy)`,
+                status: 'planning',
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            projects.push(duplicate);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            
+            loadProjects();
+            loadProjectStats();
+            showNotification('Project duplicated successfully!', 'success');
+        }
+        
+        function viewProjectDetail(projectId) {
+            const project = projects.find(p => p.id == projectId);
+            if (!project) return;
+            
+            currentProjectId = projectId;
+            
+            // Update detail view
+            document.getElementById('detail-title').textContent = project.name;
+            document.getElementById('detail-description').textContent = project.description || 'No description provided';
+            
+            // Update dates
+            const startDate = project.startDate ? new Date(project.startDate).toLocaleDateString() : 'Not set';
+            const endDate = project.deadline ? new Date(project.deadline).toLocaleDateString() : 'Not set';
+            document.getElementById('detail-dates').textContent = `${startDate} - ${endDate}`;
+            
+            document.getElementById('detail-owner').textContent = project.owner || 'Not assigned';
+            document.getElementById('detail-status').textContent = getStatusText(project.status);
+            document.getElementById('detail-progress').textContent = `${calculateProjectProgress(project)}%`;
+            
+            // Update milestones
+            const milestonesList = document.getElementById('detail-milestones');
+            milestonesList.innerHTML = '';
+            
+            if (project.milestones && project.milestones.length > 0) {
+                project.milestones.forEach(milestone => {
+                    const milestoneHTML = `
+                        <li class="milestone-item ${milestone.completed ? 'completed' : ''}">
+                            <i class="fas fa-${milestone.completed ? 'check-circle' : 'circle'}"></i>
+                            <span>${milestone.text}</span>
+                        </li>
+                    `;
+                    milestonesList.innerHTML += milestoneHTML;
+                });
+            } else {
+                milestonesList.innerHTML = '<li>No milestones defined</li>';
+            }
+            
+            // Update team
+            const teamContainer = document.getElementById('detail-team');
+            teamContainer.innerHTML = '';
+            
+            if (project.team) {
+                const teamArray = project.team.split(',').map(m => m.trim());
+                teamArray.forEach(member => {
+                    const initials = member.split(' ').map(n => n[0]).join('').toUpperCase();
+                    const teamHTML = `
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <div class="team-avatar" style="background: ${getColorFromName(member)}">${initials}</div>
+                            <div>${member}</div>
+                        </div>
+                    `;
+                    teamContainer.innerHTML += teamHTML;
+                });
+            } else {
+                teamContainer.innerHTML = '<p style="color: var(--gray);">No team members assigned</p>';
+            }
+            
+            // Show detail view
+            document.getElementById('project-details').style.display = 'block';
+            document.getElementById('list-view').style.display = 'none';
+            
+            // Scroll to details
+            document.getElementById('project-details').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function editProjectDetail() {
+            if (currentProjectId) {
+                editProject(currentProjectId);
+            }
+        }
+        
+        function loadTemplates() {
+            projectTemplates = JSON.parse(localStorage.getItem('projectTemplates') || JSON.stringify(defaultTemplates));
+            renderTemplates();
+        }
+        
+        function showTemplates() {
+            document.getElementById('templates-view').style.display = 'block';
+            document.getElementById('list-view').style.display = 'none';
+        }
+        
+        function renderTemplates() {
+            const templateGrid = document.getElementById('templates-container');
+            templateGrid.innerHTML = '';
+            
+            projectTemplates.forEach(template => {
+                const templateHTML = `
+                    <div class="template-card" onclick="useTemplate('${template.id}')">
+                        <div class="template-icon">
+                            <i class="fas fa-${template.icon}"></i>
+                        </div>
+                        <h3>${template.name}</h3>
+                        <p style="color: var(--gray); margin: 1rem 0; line-height: 1.5;">${template.description}</p>
+                        <div class="template-details">
+                            <div class="template-meta">
+                                <span><i class="fas fa-clock"></i> ${template.duration}</span>
+                                <span><i class="fas fa-users"></i> ${template.teamSize}</span>
+                                <span><i class="fas fa-dollar-sign"></i> ${template.budget}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                templateGrid.innerHTML += templateHTML;
+            });
+        }
+        
+        function useTemplate(templateId) {
+            const template = projectTemplates.find(t => t.id === templateId);
+            if (!template) return;
+            
+            document.getElementById('templates-view').style.display = 'none';
+            showProjectForm();
+            
+            // Fill form with template data
+            document.getElementById('project-name').value = template.name;
+            document.getElementById('project-description').value = template.description;
+            document.getElementById('project-category').value = template.category;
+            document.getElementById('project-milestones').value = template.content.milestones.join('\n');
+            document.getElementById('project-team').value = template.content.team.join(', ');
+            document.getElementById('project-tags').value = template.content.tags;
+            document.getElementById('project-duration').value = parseInt(template.duration.split(' ')[0]) || 4;
+            
+            // Set budget if it's a range
+            const budgetRange = template.budget.replace(/[^0-9-]/g, '');
+            if (budgetRange.includes('-')) {
+                const avgBudget = budgetRange.split('-').reduce((a, b) => parseInt(a) + parseInt(b), 0) / 2;
+                document.getElementById('project-budget').value = Math.round(avgBudget);
+            }
+            
+            showNotification(`Using "${template.name}" template`, 'success');
+        }
+        
+        function loadGanttChart() {
+            const ganttTimeline = document.getElementById('gantt-timeline');
+            const filter = document.getElementById('gantt-filter').value;
+            
+            // Filter projects
+            let filteredProjects = [...projects];
+            if (filter === 'active') {
+                filteredProjects = filteredProjects.filter(p => p.status === 'active');
+            } else if (filter === 'priority') {
+                filteredProjects = filteredProjects.filter(p => p.priority === 'high');
+            }
+            
+            // Take first 5 projects for display
+            filteredProjects = filteredProjects.slice(0, 5);
+            
+            if (filteredProjects.length === 0) {
+                ganttTimeline.innerHTML = '<div class="empty-state" style="padding: 2rem;"><p>No projects to display</p></div>';
+                return;
+            }
+            
+            // Create Gantt chart
+            let ganttHTML = `
+                <div class="timeline-header">
+                    <div class="timeline-month" style="text-align: left; padding-left: 1rem;">Project</div>
+            `;
+            
+            // Generate month headers (next 6 months)
+            const months = [];
+            const today = new Date();
+            for (let i = 0; i < 6; i++) {
+                const date = new Date(today);
+                date.setMonth(today.getMonth() + i);
+                months.push(date.toLocaleDateString('en-US', { month: 'short' }));
+            }
+            
+            months.forEach(month => {
+                ganttHTML += `<div class="timeline-month">${month}</div>`;
+            });
+            
+            ganttHTML += `</div>`;
+            
+            // Add project bars
+            filteredProjects.forEach(project => {
+                // Calculate bar position and width
+                let startMonth = 0;
+                let duration = 1;
+                
+                if (project.startDate) {
+                    const startDate = new Date(project.startDate);
+                    const diffMonths = (startDate.getFullYear() - today.getFullYear()) * 12 + startDate.getMonth() - today.getMonth();
+                    startMonth = Math.max(0, diffMonths);
+                }
+                
+                if (project.duration) {
+                    duration = Math.min(project.duration / 4, 6 - startMonth); // Convert weeks to months, max 6 months
+                }
+                
+                const barWidth = Math.max(1, duration);
+                const barColor = project.priority === 'high' ? 'var(--danger)' : 
+                                project.priority === 'medium' ? 'var(--warning)' : 'var(--success)';
+                
+                ganttHTML += `
+                    <div class="gantt-task">
+                        <div class="task-name">${project.name}</div>
+                        <div class="task-bar" style="grid-column: ${startMonth + 2} / span ${barWidth}; background: ${barColor};"></div>
+                    </div>
+                `;
+            });
+            
+            ganttTimeline.innerHTML = ganttHTML;
+        }
+        
+        function loadKanbanBoard() {
+            const kanbanBoard = document.getElementById('kanban-board');
+            
+            // Define columns
+            const columns = [
+                { id: 'backlog', title: 'Backlog', icon: 'inbox' },
+                { id: 'todo', title: 'To Do', icon: 'circle' },
+                { id: 'in-progress', title: 'In Progress', icon: 'spinner' },
+                { id: 'review', title: 'Review', icon: 'eye' },
+                { id: 'done', title: 'Done', icon: 'check-circle' }
+            ];
+            
+            // Get all tasks from projects
+            const allTasks = [];
+            projects.forEach(project => {
+                if (project.milestones) {
+                    project.milestones.forEach(milestone => {
+                        allTasks.push({
+                            id: `${project.id}-${milestone.id}`,
+                            projectId: project.id,
+                            projectName: project.name,
+                            text: milestone.text,
+                            completed: milestone.completed,
+                            priority: project.priority
+                        });
+                    });
+                }
+            });
+            
+            kanbanBoard.innerHTML = '';
+            
+            columns.forEach(column => {
+                // Filter tasks for this column
+                let columnTasks = [];
+                
+                switch(column.id) {
+                    case 'backlog':
+                        columnTasks = allTasks.filter(t => !t.completed).slice(0, 3);
+                        break;
+                    case 'todo':
+                        columnTasks = allTasks.filter(t => !t.completed).slice(3, 6);
+                        break;
+                    case 'in-progress':
+                        columnTasks = allTasks.filter(t => !t.completed).slice(6, 9);
+                        break;
+                    case 'review':
+                        columnTasks = allTasks.filter(t => !t.completed).slice(9, 12);
+                        break;
+                    case 'done':
+                        columnTasks = allTasks.filter(t => t.completed).slice(0, 5);
+                        break;
+                }
+                
+                const columnHTML = `
+                    <div class="kanban-column" data-column="${column.id}">
+                        <div class="column-header">
+                            <div class="column-title">
+                                <i class="fas fa-${column.icon}"></i>
+                                ${column.title}
+                            </div>
+                            <div class="column-count">${columnTasks.length}</div>
+                        </div>
+                        <div class="column-content" id="column-${column.id}">
+                            ${columnTasks.map(task => `
+                                <div class="kanban-task" data-task-id="${task.id}" draggable="true">
+                                    <div class="task-priority priority-${task.priority}"></div>
+                                    <div style="font-weight: 500; margin-bottom: 0.5rem;">${task.text}</div>
+                                    <div style="font-size: 0.8rem; color: var(--gray);">${task.projectName}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                kanbanBoard.innerHTML += columnHTML;
+            });
+            
+            // Re-initialize drag and drop
+            initializeKanbanDragDrop();
+        }
+        
+        function initializeKanbanDragDrop() {
+            const tasks = document.querySelectorAll('.kanban-task');
+            const columns = document.querySelectorAll('.kanban-column');
+            
+            tasks.forEach(task => {
+                task.addEventListener('dragstart', dragStart);
+            });
+            
+            columns.forEach(column => {
+                column.addEventListener('dragover', dragOver);
+                column.addEventListener('drop', drop);
+            });
+        }
+        
+        function dragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.taskId);
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+        }
+        
+        function drop(e) {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+            const columnId = e.currentTarget.dataset.column;
+            
+            if (taskElement && columnId) {
+                e.currentTarget.querySelector('.column-content').appendChild(taskElement);
+                
+                // Update task status in the background
+                updateTaskStatus(taskId, columnId);
+            }
+        }
+        
+        function updateTaskStatus(taskId, columnId) {
+            // This would update the actual task status in the data
+            // For now, we'll just show a notification
+            showNotification('Task moved successfully!', 'success');
+        }
+        
+        function addKanbanTask() {
+            const projectName = prompt('Enter project name for new task:');
+            const taskText = prompt('Enter task description:');
+            
+            if (projectName && taskText) {
+                // Add to backlog column
+                const backlogColumn = document.getElementById('column-backlog');
+                if (backlogColumn) {
+                    const newTask = document.createElement('div');
+                    newTask.className = 'kanban-task';
+                    newTask.draggable = true;
+                    newTask.dataset.taskId = `new-${Date.now()}`;
+                    newTask.innerHTML = `
+                        <div class="task-priority priority-medium"></div>
+                        <div style="font-weight: 500; margin-bottom: 0.5rem;">${taskText}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">${projectName}</div>
+                    `;
+                    
+                    backlogColumn.appendChild(newTask);
+                    newTask.addEventListener('dragstart', dragStart);
+                    
+                    // Update column count
+                    const columnHeader = backlogColumn.parentElement.querySelector('.column-count');
+                    if (columnHeader) {
+                        const currentCount = parseInt(columnHeader.textContent);
+                        columnHeader.textContent = currentCount + 1;
+                    }
+                    
+                    showNotification('Task added to backlog!', 'success');
+                }
+            }
+        }
+        
+        function loadResources() {
+            const resourcesGrid = document.getElementById('resources-grid');
+            
+            resourcesGrid.innerHTML = teamMembers.map(member => `
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <div class="resource-avatar">${member.avatar}</div>
+                        <div>
+                            <h4>${member.name}</h4>
+                            <p style="color: var(--gray); margin-top: 0.25rem;">${member.role}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-load">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Workload</span>
+                            <span>${member.load}%</span>
+                        </div>
+                        <div class="load-bar">
+                            <div class="load-fill ${member.load > 80 ? 'load-high' : member.load > 60 ? 'load-medium' : 'load-low'}"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <div style="font-size: 0.9rem; color: var(--dark); margin-bottom: 0.5rem;">Skills</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${member.skills.map(skill => `
+                                <span style="padding: 0.25rem 0.5rem; background: var(--gray-light); border-radius: 4px; font-size: 0.8rem;">${skill}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="action-btn outline" style="flex: 1; padding: 0.5rem;" onclick="assignProjectTo('${member.name}')">
+                            <i class="fas fa-plus"></i> Assign
+                        </button>
+                        <button class="action-btn outline" style="flex: 1; padding: 0.5rem;" onclick="viewResourceDetails('${member.id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function assignProjectTo(memberName) {
+            const projectNames = projects.map(p => p.name);
+            const projectName = prompt(`Assign a project to ${memberName}:\n\nAvailable projects:\n${projectNames.join('\n')}`);
+            
+            if (projectName) {
+                // Find the project and add team member
+                const project = projects.find(p => p.name === projectName);
+                if (project) {
+                    if (!project.team) project.team = '';
+                    project.team += (project.team ? ', ' : '') + memberName;
+                    localStorage.setItem('projects', JSON.stringify(projects));
+                    
+                    showNotification(`Assigned ${memberName} to ${projectName}`, 'success');
+                } else {
+                    alert('Project not found');
+                }
+            }
+        }
+        
+        function viewResourceDetails(memberId) {
+            const member = teamMembers.find(m => m.id == memberId);
+            if (!member) return;
+            
+            // Create modal for resource details
+            const modal = createModal(`Resource: ${member.name}`);
+            
+            const modalContent = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: ${getColorFromName(member.name)}; color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 600; margin: 0 auto 1rem;">${member.avatar}</div>
+                    <h2>${member.name}</h2>
+                    <p style="color: var(--gray);">${member.role}</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4><i class="fas fa-chart-line"></i> Workload Analysis</h4>
+                    <div style="background: var(--gray-light); height: 10px; border-radius: 5px; margin: 1rem 0; overflow: hidden;">
+                        <div style="width: ${member.load}%; height: 100%; background: ${member.load > 80 ? 'var(--danger)' : member.load > 60 ? 'var(--warning)' : 'var(--success)'};"></div>
+                    </div>
+                    <div style="text-align: center; font-size: 1.2rem; font-weight: 600; color: var(--dark);">${member.load}% utilized</div>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4><i class="fas fa-tools"></i> Skills & Expertise</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+                        ${member.skills.map(skill => `
+                            <span style="padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: 20px; font-size: 0.9rem;">${skill}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div>
+                    <h4><i class="fas fa-project-diagram"></i> Current Projects</h4>
+                    <div style="margin-top: 1rem;">
+                        ${projects.filter(p => p.team && p.team.includes(member.name)).map(p => `
+                            <div style="padding: 0.75rem; background: var(--gray-light); border-radius: var(--border-radius); margin-bottom: 0.5rem;">
+                                <div style="font-weight: 500;">${p.name}</div>
+                                <div style="font-size: 0.9rem; color: var(--gray);">${getStatusText(p.status)} • ${calculateProjectProgress(p)}% complete</div>
+                            </div>
+                        `).join('') || '<p style="color: var(--gray); text-align: center;">No assigned projects</p>'}
+                    </div>
+                </div>
+            `;
+            
+            modal.querySelector('.modal-body').innerHTML = modalContent;
+            document.body.appendChild(modal);
+        }
+        
+        function loadProjectTimeline() {
+            const timeline = document.getElementById('project-timeline');
+            
+            // Get recent projects
+            const recentProjects = [...projects]
+                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                .slice(0, 5);
+            
+            if (recentProjects.length === 0) {
+                timeline.innerHTML = '<div class="empty-state" style="padding: 2rem;"><p>No project activity</p></div>';
+                return;
+            }
+            
+            let timelineHTML = '<div class="timeline-line"></div>';
+            
+            recentProjects.forEach(project => {
+                const date = new Date(project.updatedAt);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                timelineHTML += `
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="font-weight: 600;">${project.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--gray);">${formattedDate}</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">
+                                Status: ${getStatusText(project.status)} • Progress: ${calculateProjectProgress(project)}%
+                            </div>
+                            <div style="margin-top: 0.5rem;">
+                                <button class="action-btn outline" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" onclick="viewProjectDetail('${project.id}')">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            timeline.innerHTML = timelineHTML;
+        }
+        
+        function exportGanttChart() {
+            // Create export data
+            const exportData = {
+                type: 'gantt-chart',
+                projects: projects.map(p => ({
+                    name: p.name,
+                    startDate: p.startDate,
+                    deadline: p.deadline,
+                    duration: p.duration,
+                    priority: p.priority,
+                    status: p.status
+                })),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gantt-chart-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Gantt chart exported successfully!', 'success');
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function createModal(title) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                padding: 1rem;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            modalContent.style.cssText = `
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 2rem;
+                max-width: 600px;
+                width: 100%;
+                max-height: 90vh;
+                overflow-y: auto;
+            `;
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>${title}</h2>
+                    <button class="action-icon" onclick="this.closest('.modal').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="modal-body"></div>
+            `;
+            
+            modal.appendChild(modalContent);
+            return modal;
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow-lg);
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        function loadSampleProjects() {
+            if (projects.length === 0) {
+                const sampleProjects = [
+                    {
+                        id: 1,
+                        name: 'Website Redesign',
+                        description: 'Complete redesign of company website with modern UX/UI and improved performance',
+                        category: 'work',
+                        priority: 'high',
+                        status: 'active',
+                        startDate: '2023-11-01',
+                        deadline: '2024-02-28',
+                        duration: 16,
+                        owner: 'John Smith',
+                        team: 'Sarah Johnson, Mike Chen, Lisa Wang',
+                        budget: 15000,
+                        milestones: [
+                            { id: 1, text: 'Research and Analysis', completed: true },
+                            { id: 2, text: 'Wireframing Complete', completed: true },
+                            { id: 3, text: 'UI Design Approved', completed: false },
+                            { id: 4, text: 'Development Phase 1', completed: false },
+                            { id: 5, text: 'Development Phase 2', completed: false },
+                            { id: 6, text: 'Testing Complete', completed: false },
+                            { id: 7, text: 'Content Migration', completed: false },
+                            { id: 8, text: 'Website Launch', completed: false }
+                        ],
+                        tags: 'website, design, development',
+                        createdAt: '2023-11-01T10:00:00Z',
+                        updatedAt: '2023-12-15T14:30:00Z'
+                    },
+                    {
+                        id: 2,
+                        name: 'Mobile App Development',
+                        description: 'Build cross-platform mobile application for product management',
+                        category: 'work',
+                        priority: 'medium',
+                        status: 'planning',
+                        startDate: '2024-01-15',
+                        deadline: '2024-06-30',
+                        duration: 24,
+                        owner: 'Emma Davis',
+                        team: 'Mike Chen, David Brown',
+                        budget: 25000,
+                        milestones: [
+                            { id: 1, text: 'Requirements Gathering', completed: true },
+                            { id: 2, text: 'Tech Stack Selection', completed: false },
+                            { id: 3, text: 'Architecture Design', completed: false },
+                            { id: 4, text: 'Development Sprint 1', completed: false },
+                            { id: 5, text: 'Development Sprint 2', completed: false }
+                        ],
+                        tags: 'mobile, app, development',
+                        createdAt: '2023-12-01T09:15:00Z',
+                        updatedAt: '2023-12-10T16:45:00Z'
+                    },
+                    {
+                        id: 3,
+                        name: 'Personal Learning Plan',
+                        description: 'Structured learning program for skill development',
+                        category: 'personal',
+                        priority: 'low',
+                        status: 'active',
+                        startDate: '2023-12-01',
+                        deadline: '2024-03-31',
+                        duration: 16,
+                        owner: 'Yourself',
+                        team: '',
+                        budget: 500,
+                        milestones: [
+                            { id: 1, text: 'Define Learning Goals', completed: true },
+                            { id: 2, text: 'Research Resources', completed: true },
+                            { id: 3, text: 'Create Study Schedule', completed: false },
+                            { id: 4, text: 'Complete Course 1', completed: false },
+                            { id: 5, text: 'Complete Course 2', completed: false },
+                            { id: 6, text: 'Build Portfolio Project', completed: false },
+                            { id: 7, text: 'Get Certification', completed: false }
+                        ],
+                        tags: 'learning, personal, development',
+                        createdAt: '2023-11-20T14:00:00Z',
+                        updatedAt: '2023-12-12T11:30:00Z'
+                    }
+                ];
+                
+                projects = sampleProjects;
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadProjects();
+                loadProjectStats();
+            }
+        }
+        
+        // Add CSS for animations
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Export functions for global use
+        window.showView = showView;
+        window.showProjectForm = showProjectForm;
+        window.editProject = editProject;
+        window.deleteProject = deleteProject;
+        window.duplicateProject = duplicateProject;
+        window.viewProjectDetail = viewProjectDetail;
+        window.editProjectDetail = editProjectDetail;
+        window.showTemplates = showTemplates;
+        window.useTemplate = useTemplate;
+        window.showGanttView = showGanttView;
+        window.showKanbanView = showKanbanView;
+        window.showResourcesView = showResourcesView;
+        window.loadGanttChart = loadGanttChart;
+        window.addKanbanTask = addKanbanTask;
+        window.exportGanttChart = exportGanttChart;
+        window.assignProjectTo = assignProjectTo;
+        window.viewResourceDetails = viewResourceDetails;
+        window.closeModal = closeModal;
+        window.dragStart = dragStart;
+        window.dragOver = dragOver;
+        window.drop = drop;
+    </script>
+</body>
+</html>
